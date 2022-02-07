@@ -1,0 +1,6 @@
+[versions]
+
+[libraries]
+spring-boot-web = {module="org.springframework.boot:spring-boot-starter-web"}
+
+[bundles]
