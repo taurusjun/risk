@@ -1,4 +1,4 @@
-package com.mtech.risk.dataio.controller
+package com.mtech.risk.management.controller
 
 import com.mtech.risk.dataio.model.Employee
 import com.mtech.risk.dataio.service.EmployeeService

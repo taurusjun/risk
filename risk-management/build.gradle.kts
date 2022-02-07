@@ -26,5 +26,5 @@ tasks.getByName<Test>("test") {
 
 application {
     // Define the main class for the application.
-    mainClass.set("com.mtech.risk.management.App")
+    mainClass.set("com.mtech.risk.management.AppKt")
 }
