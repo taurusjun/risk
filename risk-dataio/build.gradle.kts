@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "1.6.10"
     java
     id("org.springframework.boot")
-    application
+//    application
 }
 
 group = "com.mtech.risk"
@@ -25,7 +25,7 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-application {
-    // Define the main class for the application.
-    mainClass.set("com.mtech.risk.dataio.DataIOAppKt")
-}
+//application {
+//    // Define the main class for the application.
+//    mainClass.set("com.mtech.risk.dataio.DataIOAppKt")
+//}
