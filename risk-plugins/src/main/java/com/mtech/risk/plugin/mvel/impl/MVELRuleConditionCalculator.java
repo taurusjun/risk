@@ -9,11 +9,6 @@ import java.util.Map;
 public class MVELRuleConditionCalculator implements RuleConditionCalculator {
 
     @Override
-    public boolean calc(String leftNode, String operator, String rightValue) {
-        return false;
-    }
-
-    @Override
     public boolean calc(String leftNode, String operator, String rightValue, Map<String, String> extraMap) {
         return false;
     }

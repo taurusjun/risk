@@ -66,7 +66,7 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
             sb.append("\"");
             sb.append(ruleConditionObject.getRightValue());
             sb.append("\",");
-            //
+            //extra param
             Map<String, String> map = new HashMap<>();
             map.put("leftIdentifyType", ruleConditionObject.getLeftNode().getIdentifyType());
             map.put("opUUID", ruleConditionObject.getOperator().getUuid());
