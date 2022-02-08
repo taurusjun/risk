@@ -47,7 +47,8 @@ CREATE TABLE rule_condition_element
     id  INTEGER PRIMARY KEY auto_increment,
     code     VARCHAR(128) NOT NULL COMMENT 'code',
     name     VARCHAR(128) COMMENT 'name',
-    type     VARCHAR(128) NOT NULL COMMENT 'Number/String/Boolean',
+    identify_type   VARCHAR(128) DEFAULT 'variable' NOT NULL COMMENT '自身识别类型，默认为变量',
+    return_type     VARCHAR(128) NOT NULL COMMENT 'Number/String/Boolean',
     description VARCHAR(256)
 );
 
@@ -58,7 +59,7 @@ CREATE TABLE rule_condition_operator
     uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
     code     VARCHAR(128) NOT NULL COMMENT 'code',
     name     VARCHAR(128) COMMENT 'name',
-    type     VARCHAR(128) NOT NULL COMMENT 'Number/String/Boolean',
+    compare_type     VARCHAR(128) NOT NULL COMMENT 'Number/String/Boolean',
     description VARCHAR(256)
 );
 
@@ -68,6 +69,7 @@ CREATE TABLE rule_condition_operator_script
     id  INTEGER PRIMARY KEY auto_increment,
     operator_uuid  VARCHAR(128) NOT NULL COMMENT 'operator uuid',
     operator_code  VARCHAR(128) NOT NULL COMMENT 'operator code',
+    language     VARCHAR(128) COMMENT 'language to interoperate operator, e.g MVEL',
     dialect     VARCHAR(128) COMMENT 'dialect to interoperate operator, e.g MVEL',
     script     VARCHAR(128) COMMENT 'script in dialect',
     description VARCHAR(256)
