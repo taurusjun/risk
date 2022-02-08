@@ -25,6 +25,7 @@ dependencies {
 //    compileOnly("org.projectlombok:lombok")
 //    annotationProcessor("org.projectlombok:lombok")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2")
+    implementation("org.mvel:mvel2:2.4.14.Final")
 }
 
 configurations {

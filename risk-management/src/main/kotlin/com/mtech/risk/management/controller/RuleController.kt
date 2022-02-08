@@ -1,6 +1,7 @@
 package com.mtech.risk.management.controller
 
 import com.mtech.risk.dataio.model.*
+import com.mtech.risk.dataio.service.RuleDataMngService
 import com.mtech.risk.dataio.service.RuleService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -9,7 +10,12 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class RuleController(@Autowired private val ruleService: RuleService) {
+class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
+
+    @GetMapping("/rulecompile/{uuid}")
+    fun trigger(@PathVariable uuid : String) =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleDataMngService.compileScript(uuid))
 
     @GetMapping("/rule/{uuid}")
     fun getRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
