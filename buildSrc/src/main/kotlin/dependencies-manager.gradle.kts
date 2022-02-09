@@ -16,7 +16,7 @@ repositories {
 }
 
 
-group = "com.example"
+group = "com.mtech.risk"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -26,6 +26,8 @@ dependencies {
 //    annotationProcessor("org.projectlombok:lombok")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2")
     implementation("org.mvel:mvel2:2.4.14.Final")
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation("org.apache.commons:commons-lang3:3.12.0")
 }
 
 configurations {

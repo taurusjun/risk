@@ -4,34 +4,32 @@ import com.mtech.risk.dataio.service.RuleService;
 import com.mtech.risk.plugin.model.RuleConditionObject;
 import com.mtech.risk.plugin.model.RuleGroupObject;
 import com.mtech.risk.plugin.model.RuleObject;
+import com.mtech.risk.plugin.mvel.calc.ConstantsKt;
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor;
 import com.mtech.risk.plugin.service.RuleConditionCalculator;
+import com.mtech.risk.tools.RiskUtils;
 import org.mvel2.MVEL;
-import org.mvel2.integration.VariableResolverFactory;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
 
 @Service
 public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     @Autowired
     private RuleService ruleService;
-    private final String CONDITION_CALC_CLASS_FUNCION = "ruleConditionCalculator.calc";
 
     @Override
     public String compile(RuleObject ruleObject) {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i< ruleObject.getRuleGroupList().size(); i++){
             RuleGroupObject ruleGroupObject = ruleObject.getRuleGroupList().get(i);
+            //第一个group的逻辑符号不参与计算
             if(i!=0){
-                //第一个group的逻辑符号不参与计算
                 String logic = ruleGroupObject.getLogicCode();
-                sb.append(logic.equalsIgnoreCase("AND")?"&&":"||");
+                sb.append(RiskUtils.logicConvert(logic));
             }
             //left brace
             sb.append(" (");
@@ -41,12 +39,12 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         }
 
         String script = sb.toString();
-        Serializable ser = MVEL.compileExpression(script);
-        Map<String,Object> map = new HashMap<String,Object>();
         RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator();
+        Map<String,Object> map = new HashMap<String,Object>();
         map.put("ruleConditionCalculator", ruleConditionCalculator);
-//        boolean rslt = MVEL.evalToBoolean(script, map);
-        boolean rslt2 = (boolean)MVEL.executeExpression(ser, map);
+        boolean rslt = MVEL.evalToBoolean(script, map);
+//        Serializable ser = MVEL.compileExpression(script);
+//        boolean rslt2 = (boolean)MVEL.executeExpression(ser, map);
 
         return script;
     }
@@ -55,13 +53,13 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i< ruleGroupObject.getRuleConditionList().size(); i++){
             RuleConditionObject ruleConditionObject = ruleGroupObject.getRuleConditionList().get(i);
+            //第一个条件的逻辑符号不参与计算
             if(i!=0){
-                //第一个条件的逻辑符号不参与计算
                 String logic = ruleConditionObject.getLogicCode();
-                sb.append(logic.equalsIgnoreCase("AND")?"&&":"||");
+                sb.append(RiskUtils.logicConvert(logic));
             }
             sb.append(" ");
-            sb.append(this.CONDITION_CALC_CLASS_FUNCION);
+            sb.append(ConstantsKt.CONDITION_CALC_CLASS_FUNCION);
             //left brace
             sb.append("(");
             //1st param
@@ -78,9 +76,9 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
             sb.append("\",");
             //4st param: extra param
             Map<String, String> map = new HashMap<>();
-            map.put("leftIdentifyType", ruleConditionObject.getLeftNode().getIdentifyType());
-            map.put("opUUID", ruleConditionObject.getOperator().getUuid());
-            sb.append(this.map2String(map));
+            map.put(ConstantsKt.LEFT_IDENTIFY_TYPE, ruleConditionObject.getLeftNode().getIdentifyType());
+            map.put(ConstantsKt.OPERATOR_UUID, ruleConditionObject.getOperator().getUuid());
+            sb.append(RiskUtils.map2MVELString(map));
             //right brace
             sb.append(") ");
 
@@ -89,38 +87,8 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         return sb.toString();
     }
 
-    private String map2String(Map<String, String> map){
-        StringBuilder sb = new StringBuilder();
-        Set<String> keys = map.keySet();
-        sb.append("[");
-        for(String k: keys){
-            String val = map.get(k);
-            sb.append("\"");
-            sb.append(k);
-            sb.append("\":");
-            sb.append("\"");
-            sb.append(val);
-            sb.append("\",");
-        }
-        int len = sb.length();
-        if(sb.charAt(len-1)==','){
-            sb.deleteCharAt(len-1);
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
     @Override
     public String execute() {
         return null;
-    }
-
-    public static void main(String[] args){
-        MVELRiskRuleScriptExecutor scriptExecutor = new MVELRiskRuleScriptExecutor();
-        HashMap<String, String> map = new HashMap<>();
-        map.put("a","b");
-        map.put("c","d");
-        scriptExecutor.map2String(map);
-
     }
 }

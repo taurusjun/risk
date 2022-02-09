@@ -11,10 +11,6 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":risk-dataio"))
-    implementation(project(":risk-tools"))
-    implementation("org.mvel:mvel2")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(kotlin("stdlib"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

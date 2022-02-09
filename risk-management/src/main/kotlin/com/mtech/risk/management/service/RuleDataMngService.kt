@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service
 
 @Service
 open class RuleDataMngService(@Autowired private val ruleService: RuleService, @Autowired private val riskRuleScriptExecutor: RiskRuleScriptExecutor) {
-    fun compileScript(uuid:String){
+    fun compileScript(uuid:String):String?{
         val rule: Rule? = ruleService.getRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = convertRule(rule)
-            riskRuleScriptExecutor.compile(ruleObj);
+            return riskRuleScriptExecutor.compile(ruleObj);
+        }else{
+            return null;
         }
     }
 

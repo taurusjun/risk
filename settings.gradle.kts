@@ -11,7 +11,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "risk"
-include("core","api","app")
 include("risk-dataio")
 include("risk-management")
 include("risk-plugins")
+include("risk-tools")

@@ -43,6 +43,12 @@ VALUES ( '029065ba-87ff-11ec-a8a3-0242ac120002','fa3cab3c-87fc-11ec-a8a3-0242ac1
 INSERT INTO rule_condition_element ( id, code, name, return_type, description)
 VALUES ( '2','testVar002','测试变量002','String','测试变量002测试用');
 
+INSERT INTO rule_condition ( uuid, rule_group_uuid, left_id, operator_uuid, right_value)
+VALUES ( '21cfe2de-8e39-4b7c-9219-1d67b18bd7d9','fa3cab3c-87fc-11ec-a8a3-0242ac120002',3,'40d2786e-87fe-11ec-a8a3-0242ac120002','99');
+
+INSERT INTO rule_condition_element ( id, code, name, return_type, description)
+VALUES ( '3','testVar003','测试变量003','Number','测试变量003测试用');
+
 INSERT INTO rule_condition_operator ( uuid, code, name, compare_type, description)
 VALUES ( '277a1ec0-87ff-11ec-a8a3-0242ac120002','contains','包含','String','字符串测试用');
 
