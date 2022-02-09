@@ -1,12 +1,3 @@
-DROP TABLE IF EXISTS employee;
-CREATE TABLE employee
-(
-    wwid  INTEGER PRIMARY KEY auto_increment,
-    email     VARCHAR(128),
-    firstname VARCHAR(128),
-    lastname VARCHAR(256)
-);
-
 DROP TABLE IF EXISTS rule;
 CREATE TABLE rule
 (
@@ -63,16 +54,16 @@ CREATE TABLE rule_condition_operator
     description VARCHAR(256)
 );
 
-DROP TABLE IF EXISTS rule_condition_operator_script;
-CREATE TABLE rule_condition_operator_script
+DROP TABLE IF EXISTS rule_compiled_script;
+CREATE TABLE rule_compiled_script
 (
     id  INTEGER PRIMARY KEY auto_increment,
-    operator_uuid  VARCHAR(128) NOT NULL COMMENT 'operator uuid',
-    operator_code  VARCHAR(128) NOT NULL COMMENT 'operator code',
-    language     VARCHAR(128) COMMENT 'language to interoperate operator, e.g MVEL',
-    dialect     VARCHAR(128) COMMENT 'dialect to interoperate operator, e.g MVEL',
-    script     VARCHAR(128) COMMENT 'script in dialect',
-    description VARCHAR(256)
+    rule_uuid  VARCHAR(128) NOT NULL COMMENT 'rule uuid',
+    language   VARCHAR(128) NOT NULL DEFAULT 'java' COMMENT 'language to interoperate operator, e.g java',
+    dialect    VARCHAR(128) NOT NULL DEFAULT 'MVEL' COMMENT 'dialect to interoperate operator, e.g MVEL',
+    script     VARCHAR(65535) NOT NULL COMMENT '转换后的脚本',
+    version    INTEGER NOT NULL COMMENT 'version',
+    UNIQUE(rule_uuid,language,dialect)
 );
 
 DROP TABLE IF EXISTS event;

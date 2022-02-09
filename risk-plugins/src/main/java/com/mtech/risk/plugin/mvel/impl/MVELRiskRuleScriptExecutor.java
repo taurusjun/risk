@@ -1,10 +1,12 @@
 package com.mtech.risk.plugin.mvel.impl;
 
+import com.mtech.risk.base.model.EventContext;
 import com.mtech.risk.dataio.service.RuleService;
 import com.mtech.risk.plugin.model.RuleConditionObject;
 import com.mtech.risk.plugin.model.RuleGroupObject;
 import com.mtech.risk.plugin.model.RuleObject;
 import com.mtech.risk.plugin.mvel.calc.ConstantsKt;
+import com.mtech.risk.plugin.mvel.calc.RuleRepository;
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor;
 import com.mtech.risk.plugin.service.RuleConditionCalculator;
 import com.mtech.risk.tools.RiskUtils;
@@ -12,6 +14,7 @@ import org.mvel2.MVEL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +23,9 @@ import java.util.Map;
 public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     @Autowired
     private RuleService ruleService;
+
+    @Autowired
+    private RuleRepository ruleRepository;
 
     @Override
     public String compile(RuleObject ruleObject) {
@@ -88,7 +94,15 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     }
 
     @Override
-    public String execute() {
-        return null;
+    public void execute(EventContext eventContext, String ruleUUID) {
+        //load script
+        Serializable sScirpt = ruleRepository.findExecutableScript(ruleUUID);
+        //param
+        RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator();
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("ruleConditionCalculator", ruleConditionCalculator);
+        //execute
+        boolean rslt2 = (boolean)MVEL.executeExpression(sScirpt, map);
+        System.out.println(rslt2);
     }
 }

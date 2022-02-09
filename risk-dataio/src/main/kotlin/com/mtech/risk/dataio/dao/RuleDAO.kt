@@ -5,6 +5,14 @@ import org.apache.ibatis.annotations.*
 
 @Mapper
 interface RuleDAO {
+    @Select("select * from rule")
+    @Results(value = [
+        Result(property = "ruleGroups", column = "uuid",
+            many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleGroupByRuleUuid")
+        )
+    ])
+    fun getAllRules():List<Rule>
+
     @Select("select * from rule where uuid=#{uuid}")
     @Results(value = [
         Result(property = "ruleGroups", column = "uuid",
@@ -40,4 +48,16 @@ interface RuleDAO {
 
     @Select("select * from rule_condition_operator where uuid=#{uuid}")
     fun getRuleConditionOperatorByUuid(uuid:String):RuleConditionOperator?
+
+    @Select("select * rule_compiled_script where rule_uuid = #{ruleUUID} and language=#{language} and  dialect=#{dialect}")
+    fun findRuleCompiledScriptWithRuleUUIDAndLang(ruleUUID: String, lang:String, dialect:String): RuleCompiledScript
+
+    @Insert("insert into rule_compiled_script(rule_uuid, language, dialect, script, version) values (#{ruleUUID}, #{language}, #{dialect}, #{script}, #{version})")
+    fun insertRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)
+
+    @Update("update rule_compiled_script set script=#{script}, version=#{version} where id=#{id}")
+    fun updateRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)
+
+    @Select("select * from rule_compiled_script")
+    fun findAllRuleCompiledScripts():List<RuleCompiledScript>
 }

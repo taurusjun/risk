@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service
 @Service
 open class RuleService(@Autowired private val ruleDAO: RuleDAO) {
 
+    fun getAllRules(): List<Rule>? =
+        ruleDAO.getAllRules()
+
     fun getRule(uuid:String): Rule? =
         ruleDAO.getRuleByUuid(uuid)
 
@@ -25,4 +28,19 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO) {
 
     fun getRuleConditionOperatorByUuid(uuid:String): RuleConditionOperator? =
         ruleDAO.getRuleConditionOperatorByUuid(uuid)
+
+    fun getRuleCompiledScriptByRuleUUIDAndLang(uuid:String, lang:String, dialect:String):RuleCompiledScript?=
+        ruleDAO.findRuleCompiledScriptWithRuleUUIDAndLang(uuid, lang, dialect)
+
+    fun getRuleCompiledScriptByRuleUUIDWithDefaultLang(uuid:String):RuleCompiledScript?=
+        ruleDAO.findRuleCompiledScriptWithRuleUUIDAndLang(uuid, "java", "MVEL")
+
+    fun insertRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)=
+        ruleDAO.insertRuleCompiledScript(ruleCompiledScript)
+
+    fun updateRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)=
+        ruleDAO.updateRuleCompiledScript(ruleCompiledScript)
+
+    fun getAllRuleCompiledScripts():List<RuleCompiledScript>?=
+        ruleDAO.findAllRuleCompiledScripts()
 }

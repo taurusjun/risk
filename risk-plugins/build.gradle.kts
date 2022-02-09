@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation(project(":risk-dataio"))
     implementation(project(":risk-tools"))
+    implementation(project(":risk-base"))
+
     implementation("org.mvel:mvel2")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(kotlin("stdlib"))

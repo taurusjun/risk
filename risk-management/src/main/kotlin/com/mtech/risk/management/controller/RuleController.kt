@@ -11,6 +11,11 @@ import com.mtech.risk.management.service.RuleDataMngService
 @RestController
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
+    @GetMapping("/ruleexe/{uuid}")
+    fun ruleExe(@PathVariable uuid : String) =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleDataMngService.mockExe(uuid))
+
     @GetMapping("/rulecompile/{uuid}")
     fun trigger(@PathVariable uuid : String) =
         ResponseEntity.status(HttpStatus.OK)
