@@ -1,7 +1,6 @@
 package com.mtech.risk.plugin.mvel.impl;
 
 import com.mtech.risk.base.model.EventContext;
-import com.mtech.risk.dataio.service.RuleService;
 import com.mtech.risk.plugin.model.RuleConditionObject;
 import com.mtech.risk.plugin.model.RuleGroupObject;
 import com.mtech.risk.plugin.model.RuleObject;
@@ -12,6 +11,7 @@ import com.mtech.risk.plugin.service.RuleConditionCalculator;
 import com.mtech.risk.tools.RiskUtils;
 import org.mvel2.MVEL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -22,10 +22,10 @@ import java.util.Map;
 @Service
 public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     @Autowired
-    private RuleService ruleService;
-
-    @Autowired
     private RuleRepository ruleRepository;
+
+    private @Autowired
+    AutowireCapableBeanFactory beanFactory;
 
     @Override
     public String compile(RuleObject ruleObject) {
@@ -45,13 +45,6 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         }
 
         String script = sb.toString();
-        RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator();
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("ruleConditionCalculator", ruleConditionCalculator);
-        boolean rslt = MVEL.evalToBoolean(script, map);
-//        Serializable ser = MVEL.compileExpression(script);
-//        boolean rslt2 = (boolean)MVEL.executeExpression(ser, map);
-
         return script;
     }
 
@@ -82,14 +75,13 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
             sb.append("\",");
             //4st param: extra param
             Map<String, String> map = new HashMap<>();
+            map.put(ConstantsKt.LEFT_RETURN_TYPE, ruleConditionObject.getLeftNode().getReturnType());
             map.put(ConstantsKt.LEFT_IDENTIFY_TYPE, ruleConditionObject.getLeftNode().getIdentifyType());
             map.put(ConstantsKt.OPERATOR_UUID, ruleConditionObject.getOperator().getUuid());
             sb.append(RiskUtils.map2MVELString(map));
             //right brace
             sb.append(") ");
-
         }
-
         return sb.toString();
     }
 
@@ -98,7 +90,8 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         //load script
         Serializable sScirpt = ruleRepository.findExecutableScript(ruleUUID);
         //param
-        RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator();
+        RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator(eventContext);
+        beanFactory.autowireBean(ruleConditionCalculator);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("ruleConditionCalculator", ruleConditionCalculator);
         //execute

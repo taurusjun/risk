@@ -28,6 +28,8 @@ dependencies {
     implementation("org.mvel:mvel2:2.4.14.Final")
 // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation("org.apache.commons:commons-lang3:3.12.0")
+// https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation("com.google.code.gson:gson:2.7")
 }
 
 configurations {
