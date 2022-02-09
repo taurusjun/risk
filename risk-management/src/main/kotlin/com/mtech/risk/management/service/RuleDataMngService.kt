@@ -1,15 +1,16 @@
-package com.mtech.risk.dataio.service
+package com.mtech.risk.management.service
 
 import com.mtech.risk.dataio.model.Rule
 import com.mtech.risk.dataio.model.RuleCondition
 import com.mtech.risk.dataio.model.RuleGroup
+import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.plugin.model.*
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-open class RuleDataMngService(@Autowired private val ruleService: RuleService,@Autowired private val riskRuleScriptExecutor: RiskRuleScriptExecutor) {
+open class RuleDataMngService(@Autowired private val ruleService: RuleService, @Autowired private val riskRuleScriptExecutor: RiskRuleScriptExecutor) {
     fun compileScript(uuid:String){
         val rule: Rule? = ruleService.getRule(uuid)
         if(rule!=null){

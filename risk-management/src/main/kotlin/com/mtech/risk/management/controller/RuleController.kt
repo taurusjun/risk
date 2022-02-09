@@ -1,13 +1,12 @@
 package com.mtech.risk.management.controller
 
 import com.mtech.risk.dataio.model.*
-import com.mtech.risk.dataio.service.RuleDataMngService
 import com.mtech.risk.dataio.service.RuleService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
+import com.mtech.risk.management.service.RuleDataMngService
 
 @RestController
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {

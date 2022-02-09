@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":risk-dataio"))
     implementation("org.mvel:mvel2")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(kotlin("stdlib"))

@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation(project(":risk-dataio"))
+    implementation(project(":risk-plugins"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(kotlin("stdlib"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")

@@ -1,18 +1,26 @@
 package com.mtech.risk.plugin.mvel.impl;
 
+import com.mtech.risk.dataio.service.RuleService;
 import com.mtech.risk.plugin.model.RuleConditionObject;
 import com.mtech.risk.plugin.model.RuleGroupObject;
 import com.mtech.risk.plugin.model.RuleObject;
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor;
 import com.mtech.risk.plugin.service.RuleConditionCalculator;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
+@Service
 public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
+    @Autowired
+    private RuleService ruleService;
     private final String CONDITION_CALC_CLASS_FUNCION = "ruleConditionCalculator.calc";
 
     @Override
@@ -33,12 +41,14 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         }
 
         String script = sb.toString();
+        Serializable ser = MVEL.compileExpression(script);
         Map<String,Object> map = new HashMap<String,Object>();
         RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator();
         map.put("ruleConditionCalculator", ruleConditionCalculator);
-        boolean rslt = MVEL.evalToBoolean(script, map);
+//        boolean rslt = MVEL.evalToBoolean(script, map);
+        boolean rslt2 = (boolean)MVEL.executeExpression(ser, map);
 
-        return null;
+        return script;
     }
 
     private String compileRuleGroup(RuleGroupObject ruleGroupObject){
@@ -66,7 +76,7 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
             sb.append("\"");
             sb.append(ruleConditionObject.getRightValue());
             sb.append("\",");
-            //extra param
+            //4st param: extra param
             Map<String, String> map = new HashMap<>();
             map.put("leftIdentifyType", ruleConditionObject.getLeftNode().getIdentifyType());
             map.put("opUUID", ruleConditionObject.getOperator().getUuid());

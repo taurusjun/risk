@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":risk-plugins"))
+//    implementation(project(":risk-plugins"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.h2database:h2")
