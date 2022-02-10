@@ -86,7 +86,7 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     }
 
     @Override
-    public void execute(EventContext eventContext, String ruleUUID) {
+    public boolean execute(EventContext eventContext, String ruleUUID) {
         //load script
         Serializable sScirpt = ruleRepository.findExecutableScript(ruleUUID);
         //param
@@ -96,6 +96,6 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         map.put("ruleConditionCalculator", ruleConditionCalculator);
         //execute
         boolean rslt2 = (boolean)MVEL.executeExpression(sScirpt, map);
-        System.out.println(rslt2);
+        return rslt2;
     }
 }
