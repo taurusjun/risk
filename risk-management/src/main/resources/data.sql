@@ -4,8 +4,8 @@ VALUES ( 'aa65f68e-978a-45d9-9a88-8959b3850d81','payment','payment','online','{"
 INSERT INTO sub_event ( uuid, parent_uuid, code, description, status, json_properties)
 VALUES ( '8b9a92a6-87f3-11ec-a8a3-0242ac120002','aa65f68e-978a-45d9-9a88-8959b3850d81','payment_with_card','payment with card','online','');
 
-INSERT INTO rule ( uuid, name, code, categoryId, description, status)
-VALUES ( '96668402-87fc-11ec-a8a3-0242ac120002','rule001','rule001',1,'测试规则001','online');
+INSERT INTO rule ( uuid, name, code, categoryId, description, status, version)
+VALUES ( '96668402-87fc-11ec-a8a3-0242ac120002','rule001','rule001',1,'测试规则001','online', 1);
 
 -- group 1
 INSERT INTO rule_group ( uuid, rule_uuid)

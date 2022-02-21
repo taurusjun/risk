@@ -8,6 +8,7 @@ CREATE TABLE rule
     categoryId INTEGER,
     description VARCHAR(256),
     status VARCHAR(64),
+    version INTEGER NOT NULL COMMENT 'version',
     UNIQUE (code, uuid)
 );
 
