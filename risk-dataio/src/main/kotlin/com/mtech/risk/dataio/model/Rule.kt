@@ -8,6 +8,7 @@ class Rule (
     val categoryId:Integer,
     val description:String,
     val status:String,
+    val version:Integer,
     ){
     lateinit var ruleGroups: List<RuleGroup>
 }
