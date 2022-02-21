@@ -4,9 +4,34 @@ import com.mtech.risk.dataio.dao.RuleDAO
 import com.mtech.risk.dataio.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.support.TransactionTemplate
+import java.lang.RuntimeException
+
 
 @Service
-open class RuleService(@Autowired private val ruleDAO: RuleDAO) {
+open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired private val transactionTemplate: TransactionTemplate) {
+
+    fun insertNewRuleCascade(rule: Rule){
+//        transactionTemplate.execute {
+//            ruleDAO.insertRuleGroup(ruleGroup);
+//            throw RuntimeException("test it!")
+//            for( ruleCond in ruleGroup.ruleConditions){
+//                this.insertNewRuleCondition(ruleCond)
+//            }
+//        }
+    }
+
+    fun insertNewRuleGroupCascade(ruleGroup: RuleGroup){
+        ruleDAO.insertRuleGroup(ruleGroup);
+        throw RuntimeException("test it!")
+        for( ruleCond in ruleGroup.ruleConditions){
+            this.insertNewRuleCondition(ruleCond)
+        }
+    }
+
+    fun insertNewRuleCondition(ruleCondition: RuleCondition){
+        ruleDAO.insertRuleCondition(ruleCondition)
+    }
 
     fun getAllRules(): List<Rule>? =
         ruleDAO.getAllRules()
@@ -25,9 +50,6 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO) {
 
     fun getRuleConditionElementById(id:String): RuleConditionElement? =
         ruleDAO.getRuleConditionElementById(id)
-
-    fun getRuleConditionOperatorByUuid(uuid:String): RuleConditionOperator? =
-        ruleDAO.getRuleConditionOperatorByUuid(uuid)
 
     fun getRuleCompiledScriptByRuleUUIDAndLang(uuid:String, lang:String, dialect:String):RuleCompiledScript?=
         ruleDAO.findRuleCompiledScriptWithRuleUUIDAndLang(uuid, lang, dialect)

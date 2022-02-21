@@ -2,6 +2,7 @@ package com.mtech.risk.management.controller
 
 import com.mtech.risk.dataio.model.*
 import com.mtech.risk.dataio.service.RuleService
+import com.mtech.risk.management.bff.model.RuleVO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,6 +11,19 @@ import com.mtech.risk.management.service.RuleDataMngService
 
 @RestController
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
+
+    @PostMapping("/rulechange")
+    fun ruleUpdateOrInsert(@RequestBody ruleVO: RuleVO) {
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleDataMngService.ruleUpdate(ruleVO))
+    }
+
+//    @GetMapping("/ruleupdate/{uuid}")
+//    fun ruleUpdate(@PathVariable uuid : String) {
+//        val rule = ruleService.getRule(uuid);
+//        ResponseEntity.status(HttpStatus.OK)
+//            .body(ruleDataMngService.ruleUpdate(rule))
+//    }
 
     @GetMapping("/ruleexe/{uuid}")
     fun ruleExe(@PathVariable uuid : String) =
@@ -46,9 +60,9 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleConditionElementById(id))
 
-    @GetMapping("/ruleconditionoperator/{uuid}")
-    fun getRuleConditionOperatorByUuid(@PathVariable uuid : String): ResponseEntity<RuleConditionOperator> =
-        ResponseEntity.status(HttpStatus.OK)
-            .body(ruleService.getRuleConditionOperatorByUuid(uuid))
+//    @GetMapping("/ruleconditionoperator/{uuid}")
+//    fun getRuleConditionOperatorByUuid(@PathVariable uuid : String): ResponseEntity<RuleConditionOperator> =
+//        ResponseEntity.status(HttpStatus.OK)
+//            .body(ruleService.getRuleConditionOperatorByUuid(uuid))
 
 }

@@ -29,7 +29,7 @@ CREATE TABLE rule_condition
     rule_group_uuid     VARCHAR(128) NOT NULL COMMENT 'rule uuid',
     logic_code     VARCHAR(128) NOT NULL DEFAULT 'OR' COMMENT 'and/or, default is or',
     left_id  INTEGER NOT NULL COMMENT 'left element',
-    operator_uuid  VARCHAR(128) NOT NULL COMMENT 'operator uuid',
+    operator_code  VARCHAR(128) NOT NULL COMMENT 'operator code',
     right_value  VARCHAR(128) NOT NULL COMMENT 'value'
 );
 
@@ -48,11 +48,11 @@ DROP TABLE IF EXISTS rule_condition_operator;
 CREATE TABLE rule_condition_operator
 (
     id  INTEGER PRIMARY KEY auto_increment,
-    uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
-    code     VARCHAR(128) NOT NULL COMMENT 'code',
+    code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
     name     VARCHAR(128) COMMENT 'name',
     compare_type     VARCHAR(128) NOT NULL COMMENT 'Number/String/Boolean',
-    description VARCHAR(256)
+    description VARCHAR(256),
+    UNIQUE(code)
 );
 
 DROP TABLE IF EXISTS rule_compiled_script;

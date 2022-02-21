@@ -77,7 +77,7 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
             Map<String, String> map = new HashMap<>();
             map.put(ConstantsKt.LEFT_RETURN_TYPE, ruleConditionObject.getLeftNode().getReturnType());
             map.put(ConstantsKt.LEFT_IDENTIFY_TYPE, ruleConditionObject.getLeftNode().getIdentifyType());
-            map.put(ConstantsKt.OPERATOR_UUID, ruleConditionObject.getOperator().getUuid());
+            map.put(ConstantsKt.OPERATOR_CODE, ruleConditionObject.getOperator().getCode());
             sb.append(RiskUtils.map2MVELString(map));
             //right brace
             sb.append(") ");

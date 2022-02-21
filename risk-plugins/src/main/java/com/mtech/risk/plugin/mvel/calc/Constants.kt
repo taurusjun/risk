@@ -3,7 +3,7 @@ package com.mtech.risk.plugin.mvel.calc
 const val CONDITION_CALC_CLASS_FUNCION = "ruleConditionCalculator.calc"
 const val LEFT_RETURN_TYPE = "leftReturnType"
 const val LEFT_IDENTIFY_TYPE = "leftIdentifyType"
-const val OPERATOR_UUID = "operatorUUID"
+const val OPERATOR_CODE = "operatorCode"
 
 const val OPERATOR_IMPL_PACKAGE = "com.mtech.risk.plugin.mvel.calc.operator.impl"
 const val OPERATOR_APPENDIX = "Operator"

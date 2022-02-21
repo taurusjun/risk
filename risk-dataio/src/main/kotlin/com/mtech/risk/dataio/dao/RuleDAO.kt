@@ -24,6 +24,12 @@ interface RuleDAO {
     @Select("select * from rule_group where uuid=#{uuid}")
     fun getRuleGroupByUuid(uuid:String):RuleGroup
 
+    @Insert("INSERT INTO rule_group ( uuid, rule_uuid, logic_code) VALUES ( #{uuid}, #{ruleUuid}, #{logicCode})")
+    fun insertRuleGroup(ruleGroup: RuleGroup)
+
+    @Update("update rule_group set rule_uuid = #{ruleUuid}, logic_code = #{logicCode} where uuid = #{uuid}")
+    fun updateRuleGroup(ruleGroup: RuleGroup)
+
     @Select("select * from rule_group where rule_uuid=#{ruleUuid}")
     @Results(value = [
         Result(property = "ruleConditions", column = "uuid",
@@ -37,8 +43,8 @@ interface RuleDAO {
         Result(property = "ruleConditionLeftElement", column = "left_id",
             one = One(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleConditionElementById")
         ),
-        Result(property = "ruleConditionOperator", column = "operator_uuid",
-        one = One(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleConditionOperatorByUuid")
+        Result(property = "ruleConditionOperator", column = "operator_code",
+        one = One(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleConditionOperatorByCode")
         )
     ])
     fun getRuleConditionByRuleGroupUuid(ruleGroupUuid:String):RuleCondition?
@@ -46,8 +52,14 @@ interface RuleDAO {
     @Select("select * from rule_condition_element where id=#{id}")
     fun getRuleConditionElementById(id:String):RuleConditionElement?
 
-    @Select("select * from rule_condition_operator where uuid=#{uuid}")
-    fun getRuleConditionOperatorByUuid(uuid:String):RuleConditionOperator?
+    @Select("select * from rule_condition_operator where code=#{code}")
+    fun getRuleConditionOperatorByCode(uuid:String):RuleConditionOperator?
+
+    @Insert("INSERT INTO rule_condition ( uuid, rule_group_uuid, logic_code, left_id, operator_code, right_value) VALUES ( #{uuid}, #{ruleGroupUuid}, #{logicCode}, #{leftId}, #{operatorCode}, #{rightValue})")
+    fun insertRuleCondition(ruleCondition: RuleCondition)
+
+    @Update("update rule_condition set rule_group_uuid = #{ruleGroupUuid}, logic_code = #{logicCode}, left_id = #{leftId}, operator_code = #{operatorCode}, right_value = #{rightValue} where uuid = #{uuid}")
+    fun updateRuleCondition(ruleCondition: RuleCondition)
 
     @Select("select * rule_compiled_script where rule_uuid = #{ruleUUID} and language=#{language} and  dialect=#{dialect}")
     fun findRuleCompiledScriptWithRuleUUIDAndLang(ruleUUID: String, lang:String, dialect:String): RuleCompiledScript

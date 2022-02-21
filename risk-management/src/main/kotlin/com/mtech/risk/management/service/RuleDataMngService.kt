@@ -3,10 +3,10 @@ package com.mtech.risk.management.service
 import com.mtech.risk.base.model.Event
 import com.mtech.risk.base.model.EventContext
 import com.mtech.risk.dataio.model.Rule
-import com.mtech.risk.dataio.model.RuleCompiledScript
 import com.mtech.risk.dataio.model.RuleCondition
 import com.mtech.risk.dataio.model.RuleGroup
 import com.mtech.risk.dataio.service.RuleService
+import com.mtech.risk.management.bff.model.RuleVO
 import com.mtech.risk.plugin.model.*
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +15,14 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 open class RuleDataMngService(@Autowired private val ruleService: RuleService, @Autowired private val riskRuleScriptExecutor: RiskRuleScriptExecutor) {
+        fun ruleUpdate(ruleVO: RuleVO) {
+            val ruleGroup = RuleGroup(0,"111-222-333","96668402-87fc-11ec-a8a3-0242ac120002","and")
+            val ruleCondition1 = RuleCondition(0,"111-222-333-1",ruleGroup.uuid,"and", 2, "40d2786e-87fe-11ec-a8a3-0242ac120002", "99")
+            val ruleCondition2 = RuleCondition(0,"111-222-333-2",ruleGroup.uuid,"and", 1, "40d2786e-87fe-11ec-a8a3-0242ac120002", "88")
+            ruleGroup.ruleConditions= listOf(ruleCondition1, ruleCondition2)
+//            ruleService.insertNewRuleGroupCascade(ruleGroup)
+        }
+
         fun mockExe(uuid:String):String? {
             val mockEvent = Event(
                 "payment",
@@ -73,7 +81,6 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService, @
             ruleConditionObject.leftNode = ruleConditionElementObject;
             //operator
             val ruleConditionOperatorObject = RuleConditionOperatorObject()
-            ruleConditionOperatorObject.uuid = ruleCondition.ruleConditionOperator.uuid
             ruleConditionOperatorObject.code = ruleCondition.ruleConditionOperator.code
             ruleConditionOperatorObject.compareType = ruleCondition.ruleConditionOperator.compareType
             ruleConditionObject.operator = ruleConditionOperatorObject;

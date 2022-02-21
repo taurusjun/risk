@@ -22,8 +22,8 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
-//    compileOnly("org.projectlombok:lombok")
-//    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2")
     implementation("org.mvel:mvel2:2.4.14.Final")
 // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
