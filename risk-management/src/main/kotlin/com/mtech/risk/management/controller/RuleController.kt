@@ -41,6 +41,11 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.compileScript(uuid))
 
+    @GetMapping("/rulevo/{uuid}")
+    fun getRuleVOByUUID(@PathVariable uuid : String): ResponseEntity<RuleVO> =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleDataMngService.ruleVOQuery(uuid))
+
     @GetMapping("/rule/{uuid}")
     fun getRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
         ResponseEntity.status(HttpStatus.OK)
