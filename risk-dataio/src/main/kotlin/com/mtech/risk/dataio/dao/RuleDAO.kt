@@ -13,6 +13,9 @@ interface RuleDAO {
     ])
     fun getAllRules():List<Rule>
 
+    @Select("select version from rule where uuid=#{uuid}")
+    fun getRuleVersionByUuid(uuid:String):Int
+
     @Select("select * from rule where uuid=#{uuid}")
     @Results(value = [
         Result(property = "ruleGroups", column = "uuid",
@@ -20,6 +23,12 @@ interface RuleDAO {
         )
     ])
     fun getRuleByUuid(uuid:String):Rule
+
+    @Insert("INSERT INTO rule ( uuid, name, code, categoryId, description, status, version) VALUES ( #{uuid}, #{name}, #{code}, #{categoryId}, #{description}, #{status}, #{version})")
+    fun insertRule(rule: Rule)
+
+    @Update("update rule set name = #{name}, code = #{code}, categoryId = #{categoryId}, description = #{description}, status = #{status}, version = #{version} where uuid = #{uuid}")
+    fun updateRule(rule: Rule)
 
     @Select("select * from rule_group where uuid=#{uuid}")
     fun getRuleGroupByUuid(uuid:String):RuleGroup
@@ -29,6 +38,12 @@ interface RuleDAO {
 
     @Update("update rule_group set rule_uuid = #{ruleUuid}, logic_code = #{logicCode} where uuid = #{uuid}")
     fun updateRuleGroup(ruleGroup: RuleGroup)
+
+    @Delete("delete from rule_group where uuid=#{uuid}")
+    fun deleteRuleGroup(uuid:String):Boolean
+
+    @Delete("delete from rule_group where uuid not in (#{uuidSetStr}) and rule_uuid=#{ruleUuid}")
+    fun deleteMutiRuleGroup(@Param("ruleUuid") ruleUuid:String, @Param("uuidSetStr") uuidSetStr:String):Boolean
 
     @Select("select * from rule_group where rule_uuid=#{ruleUuid}")
     @Results(value = [
@@ -56,10 +71,13 @@ interface RuleDAO {
     fun getRuleConditionOperatorByCode(uuid:String):RuleConditionOperator?
 
     @Insert("INSERT INTO rule_condition ( uuid, rule_group_uuid, logic_code, left_id, operator_code, right_value) VALUES ( #{uuid}, #{ruleGroupUuid}, #{logicCode}, #{leftId}, #{operatorCode}, #{rightValue})")
-    fun insertRuleCondition(ruleCondition: RuleCondition)
+    fun insertRuleCondition(ruleCondition: RuleCondition):Boolean
 
     @Update("update rule_condition set rule_group_uuid = #{ruleGroupUuid}, logic_code = #{logicCode}, left_id = #{leftId}, operator_code = #{operatorCode}, right_value = #{rightValue} where uuid = #{uuid}")
-    fun updateRuleCondition(ruleCondition: RuleCondition)
+    fun updateRuleCondition(ruleCondition: RuleCondition):Boolean
+
+    @Delete("delete from rule_condition where uuid not in (#{uuidSetStr}) and rule_group_uuid=#{ruleGroupUuid}")
+    fun deleteMutiRuleCondition(@Param("ruleGroupUuid") ruleGroupUuid:String, @Param("uuidSetStr") uuidSetStr:String):Boolean
 
     @Select("select * rule_compiled_script where rule_uuid = #{ruleUUID} and language=#{language} and  dialect=#{dialect}")
     fun findRuleCompiledScriptWithRuleUUIDAndLang(ruleUUID: String, lang:String, dialect:String): RuleCompiledScript

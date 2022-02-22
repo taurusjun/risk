@@ -18,7 +18,8 @@ CREATE TABLE rule_group
     id  INTEGER PRIMARY KEY auto_increment,
     uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
     rule_uuid     VARCHAR(128) NOT NULL COMMENT 'rule uuid',
-    logic_code     VARCHAR(128) NOT NULL DEFAULT 'AND' COMMENT 'and/or, default is and'
+    logic_code     VARCHAR(128) NOT NULL DEFAULT 'AND' COMMENT 'and/or, default is and',
+    FOREIGN KEY (rule_uuid) REFERENCES rule(uuid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS rule_condition;
@@ -30,7 +31,8 @@ CREATE TABLE rule_condition
     logic_code     VARCHAR(128) NOT NULL DEFAULT 'OR' COMMENT 'and/or, default is or',
     left_id  INTEGER NOT NULL COMMENT 'left element',
     operator_code  VARCHAR(128) NOT NULL COMMENT 'operator code',
-    right_value  VARCHAR(128) NOT NULL COMMENT 'value'
+    right_value  VARCHAR(128) NOT NULL COMMENT 'value',
+    FOREIGN KEY (rule_group_uuid) REFERENCES rule_group(uuid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS rule_condition_element;

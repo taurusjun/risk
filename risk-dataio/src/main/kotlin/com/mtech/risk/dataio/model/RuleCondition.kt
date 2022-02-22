@@ -1,9 +1,9 @@
 package com.mtech.risk.dataio.model
 
-class RuleCondition(
+data class RuleCondition(
     val id: Int,
-    val uuid:String,
-    val ruleGroupUuid:String,
+    var uuid:String?,
+    var ruleGroupUuid:String?,
     val logicCode:String,
     val leftId: Int,
     val operatorCode:String,

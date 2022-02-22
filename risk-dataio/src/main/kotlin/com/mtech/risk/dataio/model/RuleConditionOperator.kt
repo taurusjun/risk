@@ -1,6 +1,6 @@
 package com.mtech.risk.dataio.model
 
-class RuleConditionOperator (
+data class RuleConditionOperator (
     val id:Integer,
     val code:String,
     val name:String,

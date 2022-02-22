@@ -6,32 +6,110 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
 import java.lang.RuntimeException
+import java.util.*
 
 
 @Service
 open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired private val transactionTemplate: TransactionTemplate) {
-
+    /**
+     * insert rule cascade
+     */
     fun insertNewRuleCascade(rule: Rule){
-//        transactionTemplate.execute {
-//            ruleDAO.insertRuleGroup(ruleGroup);
-//            throw RuntimeException("test it!")
-//            for( ruleCond in ruleGroup.ruleConditions){
-//                this.insertNewRuleCondition(ruleCond)
-//            }
-//        }
-    }
-
-    fun insertNewRuleGroupCascade(ruleGroup: RuleGroup){
-        ruleDAO.insertRuleGroup(ruleGroup);
-        throw RuntimeException("test it!")
-        for( ruleCond in ruleGroup.ruleConditions){
-            this.insertNewRuleCondition(ruleCond)
+        rule.uuid = UUID.randomUUID().toString()
+        rule.version = 1
+        ruleDAO.insertRule(rule)
+        for (ruleGrp in rule.ruleGroups) {
+            this.insertNewRuleGroupCascade(ruleGrp, rule.uuid!!)
         }
     }
 
-    fun insertNewRuleCondition(ruleCondition: RuleCondition){
-        ruleDAO.insertRuleCondition(ruleCondition)
+    /**
+     * update rule cascade
+     */
+    fun updateRuleCascade(rule: Rule){
+        if(rule.uuid==null){
+            throw RuntimeException("uuid is null where update rule cascade, rule = $rule")
+        }
+        ruleDAO.updateRule(rule)
+        //update & insert
+        val uuidSet = mutableSetOf<String>()
+        for(ruleGrp in rule.ruleGroups){
+            if(ruleGrp.uuid !=null){
+                this.updateRuleGroupCascade(ruleGrp)
+            }else{
+                this.insertNewRuleGroupCascade(ruleGrp, rule.uuid!!)
+            }
+            uuidSet.add(ruleGrp.uuid!!)
+        }
+        //delete
+        this.deleteMutiRuleGroup(rule.uuid!!, uuidSet)
     }
+
+    /**
+     * insert rule group cascade
+     */
+    fun insertNewRuleGroupCascade(ruleGroup: RuleGroup, ruleUUID:String):String{
+        ruleGroup.uuid = UUID.randomUUID().toString()
+        ruleGroup.ruleUuid = ruleUUID
+        ruleDAO.insertRuleGroup(ruleGroup);
+        for( ruleCond in ruleGroup.ruleConditions){
+            this.insertNewRuleCondition(ruleCond, ruleGroup.uuid!!)
+        }
+        return ruleGroup.uuid!!
+    }
+
+    /**
+     * update rule group cascade
+     */
+    fun updateRuleGroupCascade(ruleGroup: RuleGroup){
+        if(ruleGroup.uuid==null || ruleGroup.ruleUuid ==null){
+            throw RuntimeException("uuid or ruleUuid is null where update rule group cascade, ruleGroup = $ruleGroup")
+        }
+        ruleDAO.updateRuleGroup(ruleGroup)
+        //update & insert
+        val uuidSet = mutableSetOf<String>()
+        for( ruleCond in ruleGroup.ruleConditions){
+            //no uuid then insert
+            if(ruleCond.uuid!=null){
+                this.updateRuleCondition(ruleCond);
+            }else{
+                this.insertNewRuleCondition(ruleCond, ruleGroup.uuid!!)
+            }
+            uuidSet.add(ruleCond.uuid!!)
+        }
+        //delete
+        this.deleteMutiRuleCondition(ruleGroup.uuid!!, uuidSet)
+    }
+
+    /**
+     * delete rule group NOT in the notDeleteUuidSet
+     */
+    fun deleteMutiRuleGroup(ruleUuid: String, notDeleteUuidSet:Set<String>):Boolean{
+        val uuidSetString = notDeleteUuidSet.joinToString(separator = ",")
+        return ruleDAO.deleteMutiRuleGroup(ruleUuid, uuidSetString)
+    }
+
+    fun insertNewRuleCondition(ruleCondition: RuleCondition, ruleGroupUuid: String):String{
+        ruleCondition.uuid = UUID.randomUUID().toString()
+        ruleCondition.ruleGroupUuid = ruleGroupUuid
+        ruleDAO.insertRuleCondition(ruleCondition)
+        return ruleCondition.uuid!!
+    }
+
+    fun updateRuleCondition(ruleCondition: RuleCondition):Boolean{
+        return ruleDAO.updateRuleCondition(ruleCondition)
+    }
+
+    /**
+     * delete rule condition NOT in the notDeleteUuidSet
+     */
+    fun deleteMutiRuleCondition(ruleGroupUuid: String, notDeleteUuidSet:Set<String>):Boolean{
+        val uuidSetString = notDeleteUuidSet.joinToString(separator = ",")
+        return ruleDAO.deleteMutiRuleCondition(ruleGroupUuid, uuidSetString)
+    }
+
+    fun getRuleVersion(uuid:String): Int =
+        ruleDAO.getRuleVersionByUuid(uuid)
 
     fun getAllRules(): List<Rule>? =
         ruleDAO.getAllRules()

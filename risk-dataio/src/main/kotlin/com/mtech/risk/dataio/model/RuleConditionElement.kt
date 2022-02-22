@@ -1,7 +1,7 @@
 package com.mtech.risk.dataio.model
 
-class RuleConditionElement (
-    val id:Integer,
+data class RuleConditionElement (
+    val id:Int,
     val code:String,
     val name:String,
     val identifyType:String,

@@ -13,9 +13,15 @@ import com.mtech.risk.management.service.RuleDataMngService
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
     @PostMapping("/rulechange")
-    fun ruleUpdateOrInsert(@RequestBody ruleVO: RuleVO) {
+    fun ruleUpdate(@RequestBody ruleVO: RuleVO) {
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.ruleUpdate(ruleVO))
+    }
+
+    @PostMapping("/rulenew")
+    fun rulInsert(@RequestBody ruleVO: RuleVO) {
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleDataMngService.ruleInsert(ruleVO))
     }
 
 //    @GetMapping("/ruleupdate/{uuid}")
