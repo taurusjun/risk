@@ -42,8 +42,14 @@ interface RuleDAO {
     @Delete("delete from rule_group where uuid=#{uuid}")
     fun deleteRuleGroup(uuid:String):Boolean
 
-    @Delete("delete from rule_group where uuid not in (#{uuidSetStr}) and rule_uuid=#{ruleUuid}")
-    fun deleteMutiRuleGroup(@Param("ruleUuid") ruleUuid:String, @Param("uuidSetStr") uuidSetStr:String):Boolean
+    @Delete("<script>"  +
+            "delete from rule_group where rule_uuid=#{ruleUuid} and uuid not in " +
+                "<foreach collection='set' item='item' open='(' separator=',' close=')'> " +
+                    "#{item}" +
+                "</foreach>" +
+            "</script>"
+    )
+    fun deleteMutiRuleGroup(@Param("ruleUuid") ruleUuid:String, @Param("set") ruleUuidSet:Set<String>):Boolean
 
     @Select("select * from rule_group where rule_uuid=#{ruleUuid}")
     @Results(value = [
@@ -64,8 +70,14 @@ interface RuleDAO {
     ])
     fun getRuleConditionByRuleGroupUuid(ruleGroupUuid:String):RuleCondition?
 
+    @Select("select * from rule_condition_element")
+    fun getAllRuleConditionElements():List<RuleConditionElement>
+
     @Select("select * from rule_condition_element where id=#{id}")
     fun getRuleConditionElementById(id:String):RuleConditionElement?
+
+    @Select("select * from rule_condition_operator")
+    fun getAllRuleConditionOperators():List<RuleConditionOperator>
 
     @Select("select * from rule_condition_operator where code=#{code}")
     fun getRuleConditionOperatorByCode(uuid:String):RuleConditionOperator?
@@ -76,8 +88,14 @@ interface RuleDAO {
     @Update("update rule_condition set rule_group_uuid = #{ruleGroupUuid}, logic_code = #{logicCode}, left_id = #{leftId}, operator_code = #{operatorCode}, right_value = #{rightValue} where uuid = #{uuid}")
     fun updateRuleCondition(ruleCondition: RuleCondition):Boolean
 
-    @Delete("delete from rule_condition where uuid not in (#{uuidSetStr}) and rule_group_uuid=#{ruleGroupUuid}")
-    fun deleteMutiRuleCondition(@Param("ruleGroupUuid") ruleGroupUuid:String, @Param("uuidSetStr") uuidSetStr:String):Boolean
+    @Delete("<script>"  +
+            "delete from rule_condition where rule_group_uuid=#{ruleGroupUuid} and uuid not in " +
+                "<foreach collection='set' item='item' open='(' separator=',' close=')'> " +
+                    "#{item}" +
+                "</foreach>" +
+            "</script>"
+    )
+    fun deleteMutiRuleCondition(@Param("ruleGroupUuid") ruleGroupUuid:String, @Param("set") uuidSet:Set<String>):Boolean
 
     @Select("select * rule_compiled_script where rule_uuid = #{ruleUUID} and language=#{language} and  dialect=#{dialect}")
     fun findRuleCompiledScriptWithRuleUUIDAndLang(ruleUUID: String, lang:String, dialect:String): RuleCompiledScript

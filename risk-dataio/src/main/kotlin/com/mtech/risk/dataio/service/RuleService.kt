@@ -85,8 +85,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
      * delete rule group NOT in the notDeleteUuidSet
      */
     fun deleteMutiRuleGroup(ruleUuid: String, notDeleteUuidSet:Set<String>):Boolean{
-        val uuidSetString = notDeleteUuidSet.joinToString(separator = ",")
-        return ruleDAO.deleteMutiRuleGroup(ruleUuid, uuidSetString)
+        return ruleDAO.deleteMutiRuleGroup(ruleUuid, notDeleteUuidSet)
     }
 
     fun insertNewRuleCondition(ruleCondition: RuleCondition, ruleGroupUuid: String):String{
@@ -104,8 +103,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
      * delete rule condition NOT in the notDeleteUuidSet
      */
     fun deleteMutiRuleCondition(ruleGroupUuid: String, notDeleteUuidSet:Set<String>):Boolean{
-        val uuidSetString = notDeleteUuidSet.joinToString(separator = ",")
-        return ruleDAO.deleteMutiRuleCondition(ruleGroupUuid, uuidSetString)
+        return ruleDAO.deleteMutiRuleCondition(ruleGroupUuid, notDeleteUuidSet)
     }
 
     fun getRuleVersion(uuid:String): Int =
@@ -125,6 +123,12 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
 
     fun getRuleConditionByRuleGroupUUID(ruleGroupUuid:String): RuleCondition? =
         ruleDAO.getRuleConditionByRuleGroupUuid(ruleGroupUuid)
+
+    fun getAllRuleConditionElements(): List<RuleConditionElement> =
+        ruleDAO.getAllRuleConditionElements()
+
+    fun getAllRuleConditionOperators(): List<RuleConditionOperator> =
+        ruleDAO.getAllRuleConditionOperators()
 
     fun getRuleConditionElementById(id:String): RuleConditionElement? =
         ruleDAO.getRuleConditionElementById(id)

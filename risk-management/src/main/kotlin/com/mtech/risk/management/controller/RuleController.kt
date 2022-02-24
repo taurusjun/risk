@@ -3,6 +3,7 @@ package com.mtech.risk.management.controller
 import com.mtech.risk.dataio.model.*
 import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleVO
+import com.mtech.risk.management.response.Result
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 import com.mtech.risk.management.service.RuleDataMngService
 
 @RestController
+@CrossOrigin
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
     @PostMapping("/rulechange")
@@ -41,10 +43,25 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.compileScript(uuid))
 
+    @GetMapping("/ruleedit")
+    fun getRuleEditInfo(@RequestParam uuid : String): ResponseEntity<Result<Map<String, Any>>> {
+        val ruleVO = ruleDataMngService.ruleVOQuery(uuid)
+        val variables = ruleService.getAllRuleConditionElements()
+        val operators = ruleService.getAllRuleConditionOperators()
+        val map: MutableMap<String, Any> = mutableMapOf()
+        if (ruleVO != null) {
+            map["rule"] = ruleVO
+        }
+        map["variablesArray"] = variables
+        map["operatorsArray"] = operators
+        return ResponseEntity.status(HttpStatus.OK).body(Result.ok(map))
+    }
+
     @GetMapping("/rulevo/{uuid}")
-    fun getRuleVOByUUID(@PathVariable uuid : String): ResponseEntity<RuleVO> =
-        ResponseEntity.status(HttpStatus.OK)
-            .body(ruleDataMngService.ruleVOQuery(uuid))
+    fun getRuleVOByUUID(@PathVariable uuid : String): ResponseEntity<Result<RuleVO>> {
+        val ruleVO = ruleDataMngService.ruleVOQuery(uuid)
+        return ResponseEntity.status(HttpStatus.OK).body(Result.ok(ruleVO))
+    }
 
     @GetMapping("/rule/{uuid}")
     fun getRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
