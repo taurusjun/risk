@@ -46,6 +46,6 @@ VALUES ( 'lt','小于','Number','数值测试用');
 
 ------- mock compiled script -----
 
--- INSERT INTO rule_compiled_script(rule_uuid, language, dialect, script, version)
--- VALUES ('96668402-87fc-11ec-a8a3-0242ac120002', 'java', 'MVEL', '( ruleConditionCalculator.calc("testVar001","gt","0",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"gt"]) ) && ( ruleConditionCalculator.calc("testVar002","contains","a",["leftReturnType":"List_String","leftIdentifyType":"variable","operatorUUID":"contains"]) || ruleConditionCalculator.calc("testVar003","lt","99",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"lt"]) )', 1)
+INSERT INTO rule_compiled_script(rule_uuid, language, dialect, script, version)
+VALUES ('96668402-87fc-11ec-a8a3-0242ac120002', 'java', 'MVEL', '( ruleConditionCalculator.calc("testVar001","gt","0",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"gt"]) ) && ( ruleConditionCalculator.calc("testVar002","contains","a",["leftReturnType":"List_String","leftIdentifyType":"variable","operatorUUID":"contains"]) || ruleConditionCalculator.calc("testVar003","lt","99",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"lt"]) )', 1)
 
