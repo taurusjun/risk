@@ -12,6 +12,7 @@ import com.mtech.risk.management.service.RuleDataMngService
 
 @RestController
 @CrossOrigin
+@RequestMapping("/api")
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
     @PostMapping("/rulechange")
