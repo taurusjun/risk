@@ -3,14 +3,17 @@ package com.mtech.risk.management.service
 import com.mtech.risk.base.model.Event
 import com.mtech.risk.base.model.EventContext
 import com.mtech.risk.dataio.model.Rule
+import com.mtech.risk.dataio.model.RuleCompiledScript
 import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleVO
 import com.mtech.risk.management.utils.Convertor
 import com.mtech.risk.plugin.model.*
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor
+import org.apache.ibatis.annotations.Update
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
@@ -37,17 +40,43 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
             rule.version++
             ruleService.updateRuleCascade(rule)
         }
+        this.reCompileAndSaveRule(ruleVO.uuid, false)
     }
 
     /**
      * Cascade rule insert
      */
     fun ruleInsert(ruleVO: RuleVO) {
+        ruleVO.uuid = UUID.randomUUID().toString()
         val rule = Convertor.convertToDomainModel(ruleVO)
 
         ///////
         transactionTemplate.execute {
             ruleService.insertNewRuleCascade(rule)
+        }
+        this.reCompileAndSaveRule(ruleVO.uuid, true)
+    }
+
+    /**
+     * Compile and save rule
+     * @uuid rule uuid
+     * @insertOrUpdate: true for insert, false for update
+     */
+    private fun reCompileAndSaveRule(uuid: String, insertOrUpdate: Boolean){
+        val rule: Rule? = ruleService.getRule(uuid)
+        if(rule!=null){
+            val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
+            val script = riskRuleScriptExecutor.compile(ruleObj);
+            val ruleCompiledScript = RuleCompiledScript(
+                0, ruleObj.uuid, "java", "MVEL",script,rule.version
+            );
+            if(insertOrUpdate){
+                ruleService.insertRuleCompiledScript(ruleCompiledScript)
+            }else{
+                ruleService.updateRuleCompiledScript(ruleCompiledScript)
+            }
+        }else{
+            throw RuntimeException("Rule not exits for the uuid = $uuid")
         }
     }
 

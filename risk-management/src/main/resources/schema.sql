@@ -9,7 +9,8 @@ CREATE TABLE rule
     description VARCHAR(256),
     status VARCHAR(64),
     version INTEGER NOT NULL COMMENT 'version',
-    UNIQUE (code, uuid)
+    UNIQUE (uuid),
+    UNIQUE (code)
 );
 
 DROP TABLE IF EXISTS rule_group;
@@ -19,6 +20,7 @@ CREATE TABLE rule_group
     uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
     rule_uuid     VARCHAR(128) NOT NULL COMMENT 'rule uuid',
     logic_code     VARCHAR(128) NOT NULL DEFAULT 'AND' COMMENT 'and/or, default is and',
+    UNIQUE (uuid),
     FOREIGN KEY (rule_uuid) REFERENCES rule(uuid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -32,6 +34,7 @@ CREATE TABLE rule_condition
     left_id  INTEGER NOT NULL COMMENT 'left element',
     operator_code  VARCHAR(128) NOT NULL COMMENT 'operator code',
     right_value  VARCHAR(128) NOT NULL COMMENT 'value',
+    UNIQUE (uuid),
     FOREIGN KEY (rule_group_uuid) REFERENCES rule_group(uuid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -43,7 +46,8 @@ CREATE TABLE rule_condition_element
     name     VARCHAR(128) COMMENT 'name',
     identify_type   VARCHAR(128) DEFAULT 'variable' NOT NULL COMMENT '自身识别类型，默认为变量',
     return_type     VARCHAR(128) NOT NULL COMMENT 'Number/String/Boolean',
-    description VARCHAR(256)
+    description VARCHAR(256),
+    UNIQUE (code)
 );
 
 DROP TABLE IF EXISTS rule_condition_operator;
@@ -66,7 +70,7 @@ CREATE TABLE rule_compiled_script
     dialect    VARCHAR(128) NOT NULL DEFAULT 'MVEL' COMMENT 'dialect to interoperate operator, e.g MVEL',
     script     VARCHAR(65535) NOT NULL COMMENT '转换后的脚本',
     version    INTEGER NOT NULL COMMENT 'version',
-    UNIQUE(rule_uuid,language,dialect)
+    UNIQUE(rule_uuid)
 );
 
 DROP TABLE IF EXISTS event;
@@ -78,7 +82,8 @@ CREATE TABLE event
     description VARCHAR(256),
     status VARCHAR(64) NOT NULL COMMENT 'online/offline/deleted/wait',
     json_properties text,
-    UNIQUE (code,uuid)
+    UNIQUE (code),
+    UNIQUE (uuid)
 );
 
 DROP TABLE IF EXISTS sub_event;
@@ -91,7 +96,8 @@ CREATE TABLE sub_event
     description VARCHAR(256),
     status VARCHAR(64) NOT NULL COMMENT 'online/offline/deleted/wait',
     json_properties text COMMENT '合并并且覆盖父事件里的json的key',
-    UNIQUE (code, uuid)
+    UNIQUE (code),
+    UNIQUE (uuid)
 );
 
 

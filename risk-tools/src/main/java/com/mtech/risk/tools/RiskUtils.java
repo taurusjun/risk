@@ -5,9 +5,11 @@ import java.util.Set;
 
 public class RiskUtils {
     static final String LOGIC_AND = "AND";
+    static final String LOGIC_and = "and";
     static final String LOGIC_AND_SYMBOL = "&&";
 
     static final String LOGIC_OR = "OR";
+    static final String LOGIC_or = "or";
     static final String LOGIC_OR_SYMBOL = "||";
 
     static final String LOGIC_UNKNOWN = "unknown";
@@ -42,9 +44,11 @@ public class RiskUtils {
         String returnCode = LOGIC_UNKNOWN;
         switch (logicCode){
             case LOGIC_AND:
+            case LOGIC_and:
                 returnCode = LOGIC_AND_SYMBOL;
                 break;
             case LOGIC_OR:
+            case LOGIC_or:
                 returnCode = LOGIC_OR_SYMBOL;
                 break;
             default:

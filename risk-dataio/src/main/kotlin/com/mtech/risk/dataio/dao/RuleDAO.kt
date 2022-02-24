@@ -103,7 +103,7 @@ interface RuleDAO {
     @Insert("insert into rule_compiled_script(rule_uuid, language, dialect, script, version) values (#{ruleUUID}, #{language}, #{dialect}, #{script}, #{version})")
     fun insertRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)
 
-    @Update("update rule_compiled_script set script=#{script}, version=#{version} where id=#{id}")
+    @Update("update rule_compiled_script set script=#{script}, language=#{language}, dialect=#{dialect}, version=#{version} where rule_uuid=#{ruleUUID}")
     fun updateRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)
 
     @Select("select * from rule_compiled_script")
