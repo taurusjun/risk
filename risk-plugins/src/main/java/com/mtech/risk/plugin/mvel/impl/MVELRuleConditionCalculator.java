@@ -6,6 +6,7 @@ import com.mtech.risk.dataplatform.service.DataCalculationService;
 import com.mtech.risk.plugin.mvel.calc.ConstantsKt;
 import com.mtech.risk.plugin.mvel.calc.operator.Element;
 import com.mtech.risk.plugin.mvel.calc.operator.MVELOperator;
+import com.mtech.risk.plugin.mvel.calc.operator.MVELOperators;
 import com.mtech.risk.plugin.service.RuleConditionCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,16 +34,8 @@ public class MVELRuleConditionCalculator implements RuleConditionCalculator {
         //right
         Element rightEl = new Element(rightValue, "String");
         //operator
-        String opClassName = ConstantsKt.OPERATOR_IMPL_PACKAGE+"."+operator.toUpperCase()+ConstantsKt.OPERATOR_APPENDIX;
-        try {
-            Class<? extends MVELOperator> opClass = Class.forName(opClassName).asSubclass(MVELOperator.class);
-            Constructor constructor = opClass.getDeclaredConstructors()[0];
-            MVELOperator operatorInstance = (MVELOperator)constructor.newInstance();
-            boolean opResult = operatorInstance.eval(leftEl, rightEl);
-            return opResult;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        MVELOperators operatorEnum = MVELOperators.findOperationByName(operator.toUpperCase());
+        return operatorEnum.apply(leftEl, rightEl);
     }
 
     private Map<String, Object> eventContextToMap(){
