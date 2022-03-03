@@ -3,6 +3,7 @@ package com.mtech.risk.plugin.mvel.calc.operator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public enum MVELOperators {
@@ -15,7 +16,7 @@ public enum MVELOperators {
             throw new RuntimeException(e);
         }
 
-    }, "LT", "Less than")
+    }, "Less than")
     ,
     GT((left, right) -> {
         try{
@@ -26,7 +27,7 @@ public enum MVELOperators {
             throw new RuntimeException(e);
         }
 
-    }, "GT", "Greater than")
+    }, "Greater than")
     ,
     CONTAINS((left, right) -> {
         try{
@@ -36,7 +37,7 @@ public enum MVELOperators {
         }catch (Exception e){
             throw new RuntimeException(e);
         }
-    }, "CONTAINS", "Left contains right")
+    },  "Left contains right")
     ,
     ;
 
@@ -44,7 +45,7 @@ public enum MVELOperators {
 
     static {
         for (MVELOperators op: values()) {
-            innerMap.put(op.uniqueName, op);
+            innerMap.put(op.name(), op);
         }
     }
 
@@ -52,13 +53,15 @@ public enum MVELOperators {
         return innerMap.get(uniqueName);
     }
 
+    public static Set<String> nameList() {
+        return innerMap.keySet();
+    }
+
     private final BiFunction<Element, Element, Boolean> operation;
-    private final String uniqueName;
     private final String description;
 
-    MVELOperators(BiFunction<Element, Element, Boolean> operation, String uniqueName, String description) {
+    MVELOperators(BiFunction<Element, Element, Boolean> operation, String description) {
         this.operation = operation;
-        this.uniqueName = uniqueName;
         this.description = description;
     }
 
