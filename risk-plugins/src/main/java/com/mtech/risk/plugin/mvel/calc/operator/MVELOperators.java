@@ -7,6 +7,15 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 public enum MVELOperators {
+    EQ((left, right) -> {
+        try{
+            return left.equals(right);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }, "equals")
+    ,
     LT((left, right) -> {
         try{
             Number leftVal = ElementConverter.toNumberVal(left);

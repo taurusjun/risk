@@ -6,9 +6,11 @@ import com.mtech.risk.plugin.model.RuleGroupObject;
 import com.mtech.risk.plugin.model.RuleObject;
 import com.mtech.risk.plugin.mvel.calc.ConstantsKt;
 import com.mtech.risk.plugin.mvel.calc.RuleRepository;
+import com.mtech.risk.plugin.service.ActionExecutor;
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor;
 import com.mtech.risk.plugin.service.RuleConditionCalculator;
 import com.mtech.risk.tools.RiskUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.mvel2.MVEL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -18,7 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Slf4j
 @Service
 public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     @Autowired
@@ -29,6 +31,18 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
 
     @Override
     public String compile(RuleObject ruleObject) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.compileRuleLogic(ruleObject));
+        //TODO: compile rule action
+        return sb.toString();
+    }
+
+    /**
+     * 对rule的逻辑进行编译
+     * @param ruleObject
+     * @return
+     */
+    private String compileRuleLogic(RuleObject ruleObject) {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i< ruleObject.getRuleGroupList().size(); i++){
             RuleGroupObject ruleGroupObject = ruleObject.getRuleGroupList().get(i);
@@ -45,6 +59,7 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         }
 
         String script = sb.toString();
+        log.info("rule uuid: {} and its compiled script is: {}", ruleObject.getUuid(), script);
         return script;
     }
 
@@ -89,11 +104,14 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     public boolean execute(EventContext eventContext, String ruleUUID) {
         //load script
         Serializable sScirpt = ruleRepository.findExecutableScript(ruleUUID);
-        //param
+        //param: rule condition
         RuleConditionCalculator ruleConditionCalculator = new MVELRuleConditionCalculator(eventContext);
         beanFactory.autowireBean(ruleConditionCalculator);
+        //param: rule action
+        ActionExecutor actionExecutor = new MVELRuleActionExecutor(eventContext);
         Map<String,Object> map = new HashMap<String,Object>();
-        map.put("ruleConditionCalculator", ruleConditionCalculator);
+        map.put(ConstantsKt.CONDITION_CALC_CLASS_INSTANCE, ruleConditionCalculator);
+        map.put(ConstantsKt.ACTION_CLASS_INSTANCE, actionExecutor);
         //execute
         boolean rslt2 = (boolean)MVEL.executeExpression(sScirpt, map);
         return rslt2;
