@@ -44,8 +44,16 @@ VALUES ( '3','testVar003','测试变量003','Number','测试变量003测试用')
 INSERT INTO rule_condition_operator ( code, name, compare_type, description)
 VALUES ( 'lt','小于','Number','数值测试用');
 
+-- action_dict
+INSERT INTO action_dict ( code, name, params_type)
+VALUES ( 'addTag','加入标签','List');
+
+-- rule action
+INSERT INTO rule_action ( uuid, rule_uuid, action_code, params_value, extra_map)
+VALUES ( '66243293-43d3-4af4-a9d9-026abb5af9ae','96668402-87fc-11ec-a8a3-0242ac120002','addTag','["highRisk","ATO"]',null);
+
 ------- mock compiled script -----
 
 INSERT INTO rule_compiled_script(rule_uuid, language, dialect, script, version)
-VALUES ('96668402-87fc-11ec-a8a3-0242ac120002', 'java', 'MVEL', '( ruleConditionCalculator.calc("testVar001","gt","0",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"gt"]) ) && ( ruleConditionCalculator.calc("testVar002","contains","a",["leftReturnType":"List_String","leftIdentifyType":"variable","operatorUUID":"contains"]) || ruleConditionCalculator.calc("testVar003","lt","99",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"lt"]) )', 1)
+VALUES ('96668402-87fc-11ec-a8a3-0242ac120002', 'java', 'MVEL', '( ruleConditionCalculator.calc("testVar001","gt","0",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"gt"]) ) && ( ruleConditionCalculator.calc("testVar002","contains","a",["leftReturnType":"List_String","leftIdentifyType":"variable","operatorUUID":"contains"]) || ruleConditionCalculator.calc("testVar003","lt","99",["leftReturnType":"Number","leftIdentifyType":"variable","operatorUUID":"lt"]) )', 1);
 

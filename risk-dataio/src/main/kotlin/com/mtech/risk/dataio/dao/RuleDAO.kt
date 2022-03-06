@@ -11,7 +11,7 @@ interface RuleDAO {
             many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleGroupByRuleUuid")
         )
     ])
-    fun getAllRules():List<Rule>
+    fun getAllRules():List<RuleLogic>
 
     @Select("select version from rule where uuid=#{uuid}")
     fun getRuleVersionByUuid(uuid:String):Int
@@ -19,16 +19,30 @@ interface RuleDAO {
     @Select("select * from rule where uuid=#{uuid}")
     @Results(value = [
         Result(property = "ruleGroups", column = "uuid",
+            many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleGroupByRuleUuid")
+        ),
+    ])
+    fun getRuleLogicByUuid(uuid:String):RuleLogic
+
+    /**
+     * Full rule model, contains logic and action
+     */
+    @Select("select * from rule where uuid=#{uuid}")
+    @Results(value = [
+        Result(property = "ruleGroups", column = "uuid",
                many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleGroupByRuleUuid")
+        ),
+        Result(property = "ruleActions", column = "uuid",
+            many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleActionListByRuleUUID")
         )
     ])
-    fun getRuleByUuid(uuid:String):Rule
+    fun getFullRuleByUuid(uuid:String):Rule
 
     @Insert("INSERT INTO rule ( uuid, name, code, categoryId, description, status, version) VALUES ( #{uuid}, #{name}, #{code}, #{categoryId}, #{description}, #{status}, #{version})")
-    fun insertRule(rule: Rule)
+    fun insertRule(rule: RuleLogic)
 
     @Update("update rule set name = #{name}, code = #{code}, categoryId = #{categoryId}, description = #{description}, status = #{status}, version = #{version} where uuid = #{uuid}")
-    fun updateRule(rule: Rule)
+    fun updateRule(rule: RuleLogic)
 
     @Select("select * from rule_group where uuid=#{uuid}")
     fun getRuleGroupByUuid(uuid:String):RuleGroup
@@ -108,4 +122,16 @@ interface RuleDAO {
 
     @Select("select * from rule_compiled_script")
     fun findAllRuleCompiledScripts():List<RuleCompiledScript>
+
+    @Select("select * from action_dict where code=#{code}")
+    fun getActionDefByCode(code:String):ActionDef?
+
+    @Select("select * from rule_action where rule_uuid=#{ruleUUID}")
+    fun getRuleActionListByRuleUUID(ruleUUID:String):List<RuleAction>?
+
+    @Insert("INSERT INTO rule_action ( uuid, rule_uuid, action_code, params_value, extra_map) VALUES ( #{uuid}, #{ruleUUID}, #{actionCode}, #{paramsValue}, #{extraMap})")
+    fun insertRuleAction(ruleAction: RuleAction):Boolean
+
+    @Update("update rule_action set rule_uuid = #{ruleUUID}, action_code = #{actionCode}, params_value = #{paramsValue}, extra_map = #{extraMap} where uuid = #{uuid}")
+    fun updateRuleAction(ruleAction: RuleAction):Boolean
 }

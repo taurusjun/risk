@@ -3,13 +3,13 @@ package com.mtech.risk.management.service
 import com.mtech.risk.base.model.Event
 import com.mtech.risk.base.model.EventContext
 import com.mtech.risk.dataio.model.Rule
+import com.mtech.risk.dataio.model.RuleLogic
 import com.mtech.risk.dataio.model.RuleCompiledScript
 import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleVO
 import com.mtech.risk.management.utils.Convertor
 import com.mtech.risk.plugin.model.*
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor
-import org.apache.ibatis.annotations.Update
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
@@ -22,7 +22,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
                               @Autowired private val transactionTemplate: TransactionTemplate) {
 
     fun ruleVOQuery(uuid: String):RuleVO?{
-        val rule = ruleService.getRule(uuid) ?: return null
+        val rule = ruleService.getRuleLogic(uuid) ?: return null
         val ruleVO = Convertor.convertToUIVO(rule)
         return ruleVO
     }
@@ -58,12 +58,12 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     }
 
     /**
-     * Compile and save rule
+     * Compile and save compiled rule
      * @uuid rule uuid
      * @insertOrUpdate: true for insert, false for update
      */
     private fun reCompileAndSaveRule(uuid: String, insertOrUpdate: Boolean){
-        val rule: Rule? = ruleService.getRule(uuid)
+        val rule: Rule? = ruleService.getFullRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);
@@ -95,7 +95,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     }
 
     fun compileScript(uuid:String):String?{
-        val rule: Rule? = ruleService.getRule(uuid)
+        val rule: Rule? = ruleService.getFullRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);

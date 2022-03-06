@@ -1,6 +1,6 @@
 package com.mtech.risk.dataio.model
 
-data class Rule (
+data class RuleLogic (
     val id:Int,
     var uuid:String?,
     val name:String,
@@ -11,5 +11,4 @@ data class Rule (
     var version:Int,
     ){
     lateinit var ruleGroups: MutableList<RuleGroup>
-    lateinit var ruleActions: MutableList<RuleAction>
 }

@@ -65,9 +65,14 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
     }
 
     @GetMapping("/rule/{uuid}")
-    fun getRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
+    fun getRuleLogicByUUID(@PathVariable uuid : String): ResponseEntity<RuleLogic> =
         ResponseEntity.status(HttpStatus.OK)
-                    .body(ruleService.getRule(uuid))
+            .body(ruleService.getRuleLogic(uuid))
+
+    @GetMapping("/fullrule/{uuid}")
+    fun getFullRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
+        ResponseEntity.status(HttpStatus.OK)
+                    .body(ruleService.getFullRule(uuid))
 
     @GetMapping("/rulegroup/{uuid}")
     fun getRuleGroupByUUID(@PathVariable uuid : String): ResponseEntity<RuleGroup> =
@@ -88,6 +93,11 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
     fun getRuleConditionElementByUuid(@PathVariable id : String): ResponseEntity<RuleConditionElement> =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleConditionElementById(id))
+
+    @GetMapping("/ruleaction/rule/{uuid}")
+    fun getRuleActionListByRuleUUID(@PathVariable uuid : String): ResponseEntity<List<RuleAction>> =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleService.getRuleActionListByUUID(uuid))
 
 //    @GetMapping("/ruleconditionoperator/{uuid}")
 //    fun getRuleConditionOperatorByUuid(@PathVariable uuid : String): ResponseEntity<RuleConditionOperator> =

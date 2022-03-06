@@ -14,7 +14,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     /**
      * insert rule cascade
      */
-    fun insertNewRuleCascade(rule: Rule){
+    fun insertNewRuleCascade(rule: RuleLogic){
         rule.uuid = UUID.randomUUID().toString()
         rule.version = 1
         ruleDAO.insertRule(rule)
@@ -26,7 +26,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     /**
      * update rule cascade
      */
-    fun updateRuleCascade(rule: Rule){
+    fun updateRuleCascade(rule: RuleLogic){
         if(rule.uuid==null){
             throw RuntimeException("uuid is null where update rule cascade, rule = $rule")
         }
@@ -109,11 +109,14 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     fun getRuleVersion(uuid:String): Int =
         ruleDAO.getRuleVersionByUuid(uuid)
 
-    fun getAllRules(): List<Rule>? =
+    fun getAllRules(): List<RuleLogic>? =
         ruleDAO.getAllRules()
 
-    fun getRule(uuid:String): Rule? =
-        ruleDAO.getRuleByUuid(uuid)
+    fun getRuleLogic(uuid:String): RuleLogic? =
+        ruleDAO.getRuleLogicByUuid(uuid)
+
+    fun getFullRule(uuid:String): Rule? =
+        ruleDAO.getFullRuleByUuid(uuid)
 
     fun getRuleGroupByUUID(uuid:String): RuleGroup? =
         ruleDAO.getRuleGroupByUuid(uuid)
@@ -133,6 +136,9 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     fun getRuleConditionElementById(id:String): RuleConditionElement? =
         ruleDAO.getRuleConditionElementById(id)
 
+    fun getRuleActionListByUUID(uuid:String): List<RuleAction>? =
+        ruleDAO.getRuleActionListByRuleUUID(uuid)
+
     fun getRuleCompiledScriptByRuleUUIDAndLang(uuid:String, lang:String, dialect:String):RuleCompiledScript?=
         ruleDAO.findRuleCompiledScriptWithRuleUUIDAndLang(uuid, lang, dialect)
 
@@ -145,6 +151,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     fun updateRuleCompiledScript(ruleCompiledScript: RuleCompiledScript)=
         ruleDAO.updateRuleCompiledScript(ruleCompiledScript)
 
-    fun getAllRuleCompiledScripts():List<RuleCompiledScript>?=
+//    @Transactional
+    open fun getAllRuleCompiledScripts():List<RuleCompiledScript>?=
         ruleDAO.findAllRuleCompiledScripts()
 }

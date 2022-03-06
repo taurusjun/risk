@@ -61,6 +61,29 @@ CREATE TABLE rule_condition_operator
     UNIQUE(code)
 );
 
+DROP TABLE IF EXISTS action_dict;
+CREATE TABLE action_dict
+(
+    id  INTEGER PRIMARY KEY auto_increment,
+    code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
+    name     VARCHAR(128) NOT NULL COMMENT 'name',
+    params_type     VARCHAR(128) NOT NULL COMMENT 'String/List/Number/Boolean',
+    UNIQUE(code)
+);
+
+DROP TABLE IF EXISTS rule_action;
+CREATE TABLE rule_action
+(
+    id  INTEGER PRIMARY KEY auto_increment,
+    uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
+    rule_uuid     VARCHAR(128) COMMENT 'rule uuid',
+    action_code     VARCHAR(128) NOT NULL COMMENT 'refer to action code',
+    params_value     VARCHAR(1024) COMMENT 'input params jsonify string',
+    extra_map     VARCHAR(1024) COMMENT 'extraMap in JSON format for future extension',
+    UNIQUE(uuid),
+    UNIQUE KEY `rule_action` (rule_uuid, action_code)
+);
+
 DROP TABLE IF EXISTS rule_compiled_script;
 CREATE TABLE rule_compiled_script
 (

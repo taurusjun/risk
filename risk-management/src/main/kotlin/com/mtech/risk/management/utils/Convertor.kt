@@ -1,6 +1,7 @@
 package com.mtech.risk.management.utils
 
 import com.mtech.risk.dataio.model.Rule
+import com.mtech.risk.dataio.model.RuleLogic
 import com.mtech.risk.dataio.model.RuleCondition
 import com.mtech.risk.dataio.model.RuleGroup
 import com.mtech.risk.management.bff.model.RuleConditionVO
@@ -13,7 +14,7 @@ class Convertor {
         /**
          * domain model to UI VO
          */
-        fun convertToUIVO(rule: Rule): RuleVO {
+        fun convertToUIVO(rule: RuleLogic): RuleVO {
             val ruleVO = RuleVO()
             ruleVO.setUuid(rule.uuid)
             ruleVO.setName(rule.name)
@@ -51,8 +52,8 @@ class Convertor {
         /**
          * UI VO to domain model
          */
-        fun convertToDomainModel(ruleVO: RuleVO): Rule {
-            val rule = Rule(
+        fun convertToDomainModel(ruleVO: RuleVO): RuleLogic {
+            val rule = RuleLogic(
                 0,
                 ruleVO.uuid,
                 ruleVO.name,
@@ -90,7 +91,7 @@ class Convertor {
         /**
          * convert rule to executor rule model
          */
-        fun convertRuleToRuleObject(rule:Rule): RuleObject {
+        fun convertRuleToRuleObject(rule: Rule): RuleObject {
             val ruleObj: RuleObject = RuleObject()
             ruleObj.uuid = rule.uuid
             ruleObj.code = rule.code
@@ -100,6 +101,7 @@ class Convertor {
                 val ruleGroupObject: RuleGroupObject = convertRuleGroupToRuleGroupObject(ruleGroup)
                 ruleObj.ruleGroupList.add(ruleGroupObject)
             }
+            //TODO: rule action convert
             return  ruleObj
         }
 
