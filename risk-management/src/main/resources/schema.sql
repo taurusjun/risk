@@ -81,7 +81,7 @@ CREATE TABLE rule_action
     params_value     VARCHAR(1024) COMMENT 'input params jsonify string',
     extra_map     VARCHAR(1024) COMMENT 'extraMap in JSON format for future extension',
     UNIQUE(uuid),
-    UNIQUE KEY `rule_action` (rule_uuid, action_code)
+    UNIQUE KEY `rule_action_union` (rule_uuid, action_code)
 );
 
 DROP TABLE IF EXISTS rule_compiled_script;
