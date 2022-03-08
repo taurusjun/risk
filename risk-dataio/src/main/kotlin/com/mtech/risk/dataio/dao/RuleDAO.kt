@@ -36,7 +36,7 @@ interface RuleDAO {
             many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleActionListByRuleUUID")
         )
     ])
-    fun getFullRuleByUuid(uuid:String):Rule
+    fun getCompleteRuleByUuid(uuid:String):Rule
 
     @Insert("INSERT INTO rule ( uuid, name, code, categoryId, description, status, version) VALUES ( #{uuid}, #{name}, #{code}, #{categoryId}, #{description}, #{status}, #{version})")
     fun insertRuleLogic(rule: RuleLogic)
@@ -122,9 +122,6 @@ interface RuleDAO {
 
     @Select("select * from rule_compiled_script")
     fun findAllRuleCompiledScripts():List<RuleCompiledScript>
-
-    @Select("select * from action_dict where code=#{code}")
-    fun getActionDefByCode(code:String):ActionDef?
 
     @Select("select * from rule_action where rule_uuid=#{ruleUUID}")
     fun getRuleActionListByRuleUUID(ruleUUID:String):List<RuleAction>?

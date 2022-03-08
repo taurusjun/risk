@@ -3,7 +3,6 @@ package com.mtech.risk.management.service
 import com.mtech.risk.base.model.Event
 import com.mtech.risk.base.model.EventContext
 import com.mtech.risk.dataio.model.Rule
-import com.mtech.risk.dataio.model.RuleLogic
 import com.mtech.risk.dataio.model.RuleCompiledScript
 import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleVO
@@ -63,7 +62,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      * @insertOrUpdate: true for insert, false for update
      */
     private fun reCompileAndSaveRule(uuid: String, insertOrUpdate: Boolean){
-        val rule: Rule? = ruleService.getFullRule(uuid)
+        val rule: Rule? = ruleService.getCompleteRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);
@@ -95,7 +94,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     }
 
     fun compileScript(uuid:String):String?{
-        val rule: Rule? = ruleService.getFullRule(uuid)
+        val rule: Rule? = ruleService.getCompleteRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);

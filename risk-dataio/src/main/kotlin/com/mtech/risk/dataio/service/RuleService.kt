@@ -5,7 +5,6 @@ import com.mtech.risk.dataio.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
-import java.lang.RuntimeException
 import java.util.*
 
 
@@ -115,13 +114,13 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     fun getRuleLogic(uuid:String): RuleLogic? =
         ruleDAO.getRuleLogicByUuid(uuid)
 
-    fun getFullRule(uuid:String): Rule? =
-        ruleDAO.getFullRuleByUuid(uuid)
+    fun getCompleteRule(uuid:String): Rule? =
+        ruleDAO.getCompleteRuleByUuid(uuid)
 
     fun getRuleGroupByUUID(uuid:String): RuleGroup? =
         ruleDAO.getRuleGroupByUuid(uuid)
 
-    fun getRuleGroupByRuleUUID(ruleUuid:String): List<RuleGroup>? =
+    fun getRuleGroupsByRuleUUID(ruleUuid:String): List<RuleGroup>? =
         ruleDAO.getRuleGroupByRuleUuid(ruleUuid)
 
     fun getRuleConditionByRuleGroupUUID(ruleGroupUuid:String): RuleCondition? =

@@ -4,24 +4,24 @@ import com.mtech.risk.dataio.model.*
 import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleVO
 import com.mtech.risk.management.response.Result
+import com.mtech.risk.management.service.RuleDataMngService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import com.mtech.risk.management.service.RuleDataMngService
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api")
+@RequestMapping("/rule")
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
-    @PostMapping("/rulechange")
+    @PostMapping("/update")
     fun ruleUpdate(@RequestBody ruleVO: RuleVO) {
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.ruleUpdate(ruleVO))
     }
 
-    @PostMapping("/rulenew")
+    @PostMapping("/create")
     fun rulInsert(@RequestBody ruleVO: RuleVO) {
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.ruleInsert(ruleVO))
@@ -34,67 +34,53 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
 //            .body(ruleDataMngService.ruleUpdate(rule))
 //    }
 
-    @GetMapping("/ruleexe/{uuid}")
+    @GetMapping("/exe/{uuid}")
     fun ruleExe(@PathVariable uuid : String) =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.mockExe(uuid))
 
-    @GetMapping("/rulecompile/{uuid}")
-    fun trigger(@PathVariable uuid : String) =
+    @GetMapping("/compile/{uuid}")
+    fun forceCompile(@PathVariable uuid : String) =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.compileScript(uuid))
 
-    @GetMapping("/ruleedit")
-    fun getRuleEditInfo(@RequestParam uuid : String): ResponseEntity<Result<Map<String, Any>>> {
-        val ruleVO = ruleDataMngService.ruleVOQuery(uuid)
-        val variables = ruleService.getAllRuleConditionElements()
-        val operators = ruleService.getAllRuleConditionOperators()
-        val map: MutableMap<String, Any> = mutableMapOf()
-        if (ruleVO != null) {
-            map["rule"] = ruleVO
-        }
-        map["variablesArray"] = variables
-        map["operatorsArray"] = operators
-        return ResponseEntity.status(HttpStatus.OK).body(Result.ok(map))
-    }
-
-    @GetMapping("/rulevo/{uuid}")
+    @GetMapping("/vo/{uuid}")
     fun getRuleVOByUUID(@PathVariable uuid : String): ResponseEntity<Result<RuleVO>> {
         val ruleVO = ruleDataMngService.ruleVOQuery(uuid)
         return ResponseEntity.status(HttpStatus.OK).body(Result.ok(ruleVO))
     }
 
-    @GetMapping("/rule/{uuid}")
+    @GetMapping("/logic/{uuid}")
     fun getRuleLogicByUUID(@PathVariable uuid : String): ResponseEntity<RuleLogic> =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleLogic(uuid))
 
-    @GetMapping("/fullrule/{uuid}")
+    @GetMapping("/complete/{uuid}")
     fun getFullRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
         ResponseEntity.status(HttpStatus.OK)
-                    .body(ruleService.getFullRule(uuid))
+                    .body(ruleService.getCompleteRule(uuid))
 
-    @GetMapping("/rulegroup/{uuid}")
+    @GetMapping("/group/{uuid}")
     fun getRuleGroupByUUID(@PathVariable uuid : String): ResponseEntity<RuleGroup> =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleGroupByUUID(uuid))
 
-    @GetMapping("/rulegroup/rule/{uuid}")
+    @GetMapping("/groupsOfrule/{uuid}")
     fun getRuleGroupByRuleUUID(@PathVariable uuid : String): ResponseEntity<List<RuleGroup>> =
         ResponseEntity.status(HttpStatus.OK)
-            .body(ruleService.getRuleGroupByRuleUUID(uuid))
+            .body(ruleService.getRuleGroupsByRuleUUID(uuid))
 
-    @GetMapping("/rulecondition/rulegroup/{uuid}")
+    @GetMapping("/conditionOfgroup/{uuid}")
     fun getRuleConditionByRuleGroupUUID(@PathVariable uuid : String): ResponseEntity<RuleCondition> =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleConditionByRuleGroupUUID(uuid))
 
-    @GetMapping("/ruleconditionelement/{id}")
+    @GetMapping("/conditionelement/{id}")
     fun getRuleConditionElementByUuid(@PathVariable id : String): ResponseEntity<RuleConditionElement> =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleConditionElementById(id))
 
-    @GetMapping("/ruleaction/rule/{uuid}")
+    @GetMapping("/actionOfrule/{uuid}")
     fun getRuleActionListByRuleUUID(@PathVariable uuid : String): ResponseEntity<List<RuleAction>> =
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleService.getRuleActionListByUUID(uuid))
