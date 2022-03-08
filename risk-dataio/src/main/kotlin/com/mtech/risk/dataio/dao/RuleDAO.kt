@@ -6,12 +6,15 @@ import org.apache.ibatis.annotations.*
 @Mapper
 interface RuleDAO {
     @Select("select * from rule")
+    fun getAllRules():List<Rule>
+
+    @Select("select * from rule")
     @Results(value = [
         Result(property = "ruleGroups", column = "uuid",
             many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleGroupByRuleUuid")
         )
     ])
-    fun getAllRules():List<RuleLogic>
+    fun getAllRuleLogics():List<RuleLogic>
 
     @Select("select version from rule where uuid=#{uuid}")
     fun getRuleVersionByUuid(uuid:String):Int
@@ -36,7 +39,7 @@ interface RuleDAO {
             many = Many(select = "com.mtech.risk.dataio.dao.RuleDAO.getRuleActionListByRuleUUID")
         )
     ])
-    fun getCompleteRuleByUuid(uuid:String):Rule
+    fun getCompleteRuleByUuid(uuid:String):RuleComplete
 
     @Insert("INSERT INTO rule ( uuid, name, code, categoryId, description, status, version) VALUES ( #{uuid}, #{name}, #{code}, #{categoryId}, #{description}, #{status}, #{version})")
     fun insertRuleLogic(rule: RuleLogic)

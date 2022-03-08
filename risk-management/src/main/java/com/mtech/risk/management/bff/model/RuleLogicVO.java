@@ -1,6 +1,9 @@
 package com.mtech.risk.management.bff.model;
 
-public class RuleVO {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RuleLogicVO {
     String uuid;
     String name;
     String code;
@@ -8,6 +11,8 @@ public class RuleVO {
     String description;
     String status;
     int version;
+
+    List<RuleGroupVO> ruleGroups = new ArrayList<>();
 
     public String getUuid() {
         return uuid;
@@ -63,5 +68,13 @@ public class RuleVO {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public List<RuleGroupVO> getRuleGroups() {
+        return ruleGroups;
+    }
+
+    public void setRuleGroups(List<RuleGroupVO> ruleGroups) {
+        this.ruleGroups = ruleGroups;
     }
 }

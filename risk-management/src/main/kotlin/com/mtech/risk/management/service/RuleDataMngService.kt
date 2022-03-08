@@ -4,10 +4,13 @@ import com.mtech.risk.base.model.Event
 import com.mtech.risk.base.model.EventContext
 import com.mtech.risk.dataio.model.Rule
 import com.mtech.risk.dataio.model.RuleCompiledScript
+import com.mtech.risk.dataio.model.RuleComplete
 import com.mtech.risk.dataio.service.RuleService
+import com.mtech.risk.management.bff.model.RuleLogicVO
 import com.mtech.risk.management.bff.model.RuleVO
+import com.mtech.risk.management.bff.model.RuleWithActionsVO
 import com.mtech.risk.management.utils.Convertor
-import com.mtech.risk.plugin.model.*
+import com.mtech.risk.plugin.model.RuleObject
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -19,17 +22,42 @@ import java.util.concurrent.ConcurrentHashMap
 open class RuleDataMngService(@Autowired private val ruleService: RuleService,
                               @Autowired private val riskRuleScriptExecutor: RiskRuleScriptExecutor,
                               @Autowired private val transactionTemplate: TransactionTemplate) {
-
-    fun ruleVOQuery(uuid: String):RuleVO?{
-        val rule = ruleService.getRuleLogic(uuid) ?: return null
-        val ruleVO = Convertor.convertToUIVO(rule)
-        return ruleVO
+    /**
+     * rule logic vo
+     */
+    fun ruleLogicVOQuery(uuid: String): RuleLogicVO?{
+        val ruleLogic = ruleService.getRuleLogic(uuid) ?: return null
+        val ruleLogicVO = Convertor.convertRuleLogicToUIVO(ruleLogic)
+        return ruleLogicVO
     }
+
+    /**
+     * rule logic vo
+     */
+    fun ruleActionVOQuery(uuid: String): RuleWithActionsVO {
+        val ruleActionList = ruleService.getRuleActionListByUUID(uuid)
+        val ruleWithActionsVO = Convertor.convertRuleActionToUIVO(uuid, ruleActionList)
+        return ruleWithActionsVO
+    }
+
+    /**
+     * rule vo list
+     */
+    fun ruleVOListQuery(): List<RuleVO>? {
+        val ruleList = ruleService.getAllRules()?:return null
+        val ruleVOList = mutableListOf<RuleVO>()
+        for(rule: Rule in ruleList){
+            val ruleVO = Convertor.convertRuleToVO(rule)
+            ruleVOList.add(ruleVO)
+        }
+        return ruleVOList
+    }
+
     /**
      * Cascade rule update
      */
-    fun ruleUpdate(ruleVO: RuleVO) {
-        val rule = Convertor.convertToDomainModel(ruleVO)
+    fun ruleLogicUpdate(ruleVO: RuleLogicVO) {
+        val rule = Convertor.convertVOToRuleLogic(ruleVO)
         ///////
         transactionTemplate.execute {
             var currentVersion = ruleService.getRuleVersion(ruleVO.uuid)
@@ -45,9 +73,9 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     /**
      * Cascade rule insert
      */
-    fun ruleInsert(ruleVO: RuleVO) {
+    fun ruleInsert(ruleVO: RuleLogicVO) {
         ruleVO.uuid = UUID.randomUUID().toString()
-        val rule = Convertor.convertToDomainModel(ruleVO)
+        val rule = Convertor.convertVOToRuleLogic(ruleVO)
 
         ///////
         transactionTemplate.execute {
@@ -62,7 +90,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      * @insertOrUpdate: true for insert, false for update
      */
     private fun reCompileAndSaveRule(uuid: String, insertOrUpdate: Boolean){
-        val rule: Rule? = ruleService.getCompleteRule(uuid)
+        val rule: RuleComplete? = ruleService.getCompleteRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);
@@ -94,7 +122,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     }
 
     fun compileScript(uuid:String):String?{
-        val rule: Rule? = ruleService.getCompleteRule(uuid)
+        val rule: RuleComplete? = ruleService.getCompleteRule(uuid)
         if(rule!=null){
             val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);

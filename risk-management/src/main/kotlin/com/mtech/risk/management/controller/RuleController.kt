@@ -2,7 +2,7 @@ package com.mtech.risk.management.controller
 
 import com.mtech.risk.dataio.model.*
 import com.mtech.risk.dataio.service.RuleService
-import com.mtech.risk.management.bff.model.RuleVO
+import com.mtech.risk.management.bff.model.RuleLogicVO
 import com.mtech.risk.management.response.Result
 import com.mtech.risk.management.service.RuleDataMngService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,23 +16,16 @@ import org.springframework.web.bind.annotation.*
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
     @PostMapping("/update")
-    fun ruleUpdate(@RequestBody ruleVO: RuleVO) {
+    fun ruleUpdate(@RequestBody ruleVO: RuleLogicVO) {
         ResponseEntity.status(HttpStatus.OK)
-            .body(ruleDataMngService.ruleUpdate(ruleVO))
+            .body(ruleDataMngService.ruleLogicUpdate(ruleVO))
     }
 
     @PostMapping("/create")
-    fun rulInsert(@RequestBody ruleVO: RuleVO) {
+    fun rulInsert(@RequestBody ruleVO: RuleLogicVO) {
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.ruleInsert(ruleVO))
     }
-
-//    @GetMapping("/ruleupdate/{uuid}")
-//    fun ruleUpdate(@PathVariable uuid : String) {
-//        val rule = ruleService.getRule(uuid);
-//        ResponseEntity.status(HttpStatus.OK)
-//            .body(ruleDataMngService.ruleUpdate(rule))
-//    }
 
     @GetMapping("/exe/{uuid}")
     fun ruleExe(@PathVariable uuid : String) =
@@ -44,9 +37,9 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
         ResponseEntity.status(HttpStatus.OK)
             .body(ruleDataMngService.compileScript(uuid))
 
-    @GetMapping("/vo/{uuid}")
-    fun getRuleVOByUUID(@PathVariable uuid : String): ResponseEntity<Result<RuleVO>> {
-        val ruleVO = ruleDataMngService.ruleVOQuery(uuid)
+    @GetMapping("/logicVO/{uuid}")
+    fun getRuleLogicVOByUUID(@PathVariable uuid : String): ResponseEntity<Result<RuleLogicVO>> {
+        val ruleVO = ruleDataMngService.ruleLogicVOQuery(uuid)
         return ResponseEntity.status(HttpStatus.OK).body(Result.ok(ruleVO))
     }
 
@@ -56,7 +49,7 @@ class RuleController(@Autowired private val ruleService: RuleService,@Autowired 
             .body(ruleService.getRuleLogic(uuid))
 
     @GetMapping("/complete/{uuid}")
-    fun getFullRuleByUUID(@PathVariable uuid : String): ResponseEntity<Rule> =
+    fun getFullRuleByUUID(@PathVariable uuid : String): ResponseEntity<RuleComplete> =
         ResponseEntity.status(HttpStatus.OK)
                     .body(ruleService.getCompleteRule(uuid))
 

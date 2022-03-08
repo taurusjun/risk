@@ -108,13 +108,16 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     fun getRuleVersion(uuid:String): Int =
         ruleDAO.getRuleVersionByUuid(uuid)
 
-    fun getAllRules(): List<RuleLogic>? =
+    fun getAllRules(): List<Rule>? =
         ruleDAO.getAllRules()
+
+    fun getAllRuleLogics(): List<RuleLogic>? =
+        ruleDAO.getAllRuleLogics()
 
     fun getRuleLogic(uuid:String): RuleLogic? =
         ruleDAO.getRuleLogicByUuid(uuid)
 
-    fun getCompleteRule(uuid:String): Rule? =
+    fun getCompleteRule(uuid:String): RuleComplete? =
         ruleDAO.getCompleteRuleByUuid(uuid)
 
     fun getRuleGroupByUUID(uuid:String): RuleGroup? =
