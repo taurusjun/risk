@@ -39,10 +39,10 @@ interface RuleDAO {
     fun getFullRuleByUuid(uuid:String):Rule
 
     @Insert("INSERT INTO rule ( uuid, name, code, categoryId, description, status, version) VALUES ( #{uuid}, #{name}, #{code}, #{categoryId}, #{description}, #{status}, #{version})")
-    fun insertRule(rule: RuleLogic)
+    fun insertRuleLogic(rule: RuleLogic)
 
     @Update("update rule set name = #{name}, code = #{code}, categoryId = #{categoryId}, description = #{description}, status = #{status}, version = #{version} where uuid = #{uuid}")
-    fun updateRule(rule: RuleLogic)
+    fun updateRuleLogic(rule: RuleLogic)
 
     @Select("select * from rule_group where uuid=#{uuid}")
     fun getRuleGroupByUuid(uuid:String):RuleGroup
@@ -129,9 +129,9 @@ interface RuleDAO {
     @Select("select * from rule_action where rule_uuid=#{ruleUUID}")
     fun getRuleActionListByRuleUUID(ruleUUID:String):List<RuleAction>?
 
-    @Insert("INSERT INTO rule_action ( uuid, rule_uuid, action_code, params_value, extra_map) VALUES ( #{uuid}, #{ruleUUID}, #{actionCode}, #{paramsValue}, #{extraMap})")
+    @Insert("INSERT INTO rule_action ( uuid, rule_uuid, flag, action_code, params_value, extra_map) VALUES ( #{uuid}, #{flag}, #{ruleUUID}, #{actionCode}, #{paramsValue}, #{extraMap})")
     fun insertRuleAction(ruleAction: RuleAction):Boolean
 
-    @Update("update rule_action set rule_uuid = #{ruleUUID}, action_code = #{actionCode}, params_value = #{paramsValue}, extra_map = #{extraMap} where uuid = #{uuid}")
+    @Update("update rule_action set rule_uuid = #{ruleUUID}, flag=#{flag}, action_code = #{actionCode}, params_value = #{paramsValue}, extra_map = #{extraMap} where uuid = #{uuid}")
     fun updateRuleAction(ruleAction: RuleAction):Boolean
 }

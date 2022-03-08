@@ -76,12 +76,13 @@ CREATE TABLE rule_action
 (
     id  INTEGER PRIMARY KEY auto_increment,
     uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
+    flag     VARCHAR(8) NOT NULL COMMENT 'Y/N, Y: 命中规则；N：没命中规则',
     rule_uuid     VARCHAR(128) COMMENT 'rule uuid',
     action_code     VARCHAR(128) NOT NULL COMMENT 'refer to action code',
     params_value     VARCHAR(1024) COMMENT 'input params jsonify string',
     extra_map     VARCHAR(1024) COMMENT 'extraMap in JSON format for future extension',
     UNIQUE(uuid),
-    UNIQUE KEY `rule_action_union` (rule_uuid, action_code)
+    UNIQUE KEY `rule_action_union` (rule_uuid, action_code, flag)
 );
 
 DROP TABLE IF EXISTS rule_compiled_script;

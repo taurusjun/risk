@@ -1,9 +1,6 @@
 package com.mtech.risk.management.utils
 
-import com.mtech.risk.dataio.model.Rule
-import com.mtech.risk.dataio.model.RuleLogic
-import com.mtech.risk.dataio.model.RuleCondition
-import com.mtech.risk.dataio.model.RuleGroup
+import com.mtech.risk.dataio.model.*
 import com.mtech.risk.management.bff.model.RuleConditionVO
 import com.mtech.risk.management.bff.model.RuleGroupVO
 import com.mtech.risk.management.bff.model.RuleVO
@@ -92,7 +89,7 @@ class Convertor {
          * convert rule to executor rule model
          */
         fun convertRuleToRuleObject(rule: Rule): RuleObject {
-            val ruleObj: RuleObject = RuleObject()
+            val ruleObj = RuleObject()
             ruleObj.uuid = rule.uuid
             ruleObj.code = rule.code
             ruleObj.name = rule.name
@@ -101,7 +98,10 @@ class Convertor {
                 val ruleGroupObject: RuleGroupObject = convertRuleGroupToRuleGroupObject(ruleGroup)
                 ruleObj.ruleGroupList.add(ruleGroupObject)
             }
-            //TODO: rule action convert
+            for(ruleAction: RuleAction in rule.ruleActions){
+                val ruleActionObject = convertRuleActionToRuleActionObject(ruleAction)
+                ruleObj.ruleActionList.add(ruleActionObject)
+            }
             return  ruleObj
         }
 
@@ -130,6 +130,17 @@ class Convertor {
                 ruleGroupObject.ruleConditionList.add(ruleConditionObject)
             }
             return ruleGroupObject
+        }
+
+        private fun convertRuleActionToRuleActionObject(ruleAction: RuleAction): RuleActionObject {
+            val ruleActionObject = RuleActionObject();
+            ruleActionObject.uuid = ruleAction.uuid
+            ruleActionObject.flag = ruleAction.flag
+            ruleActionObject.ruleUUID = ruleAction.ruleUUID
+            ruleActionObject.actionCode = ruleAction.actionCode
+            ruleActionObject.paramsValue = ruleAction.paramsValue
+            ruleActionObject.extraMap = ruleAction.extraMap
+            return ruleActionObject
         }
     }
 }

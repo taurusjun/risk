@@ -74,4 +74,6 @@ public class RuleObject {
     String name;
     String status;
     List<RuleGroupObject> ruleGroupList = new ArrayList<>();
+    List<RuleActionObject> ruleActionList = new ArrayList<>();
+
 }

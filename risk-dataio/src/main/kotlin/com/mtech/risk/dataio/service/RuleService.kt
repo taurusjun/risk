@@ -17,7 +17,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
     fun insertNewRuleCascade(rule: RuleLogic){
         rule.uuid = UUID.randomUUID().toString()
         rule.version = 1
-        ruleDAO.insertRule(rule)
+        ruleDAO.insertRuleLogic(rule)
         for (ruleGrp in rule.ruleGroups) {
             this.insertNewRuleGroupCascade(ruleGrp, rule.uuid!!)
         }
@@ -30,7 +30,7 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
         if(rule.uuid==null){
             throw RuntimeException("uuid is null where update rule cascade, rule = $rule")
         }
-        ruleDAO.updateRule(rule)
+        ruleDAO.updateRuleLogic(rule)
         //update & insert
         val uuidSet = mutableSetOf<String>()
         for(ruleGrp in rule.ruleGroups){

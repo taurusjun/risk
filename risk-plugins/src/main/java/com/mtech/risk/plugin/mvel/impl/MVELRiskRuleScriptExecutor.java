@@ -1,6 +1,7 @@
 package com.mtech.risk.plugin.mvel.impl;
 
 import com.mtech.risk.base.model.EventContext;
+import com.mtech.risk.plugin.model.RuleActionObject;
 import com.mtech.risk.plugin.model.RuleConditionObject;
 import com.mtech.risk.plugin.model.RuleGroupObject;
 import com.mtech.risk.plugin.model.RuleObject;
@@ -33,7 +34,70 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
     public String compile(RuleObject ruleObject) {
         StringBuilder sb = new StringBuilder();
         sb.append(this.compileRuleLogic(ruleObject));
-        //TODO: compile rule action
+        sb.append(this.compileRuleAction(ruleObject));
+        return sb.toString();
+    }
+
+    /**
+     * compile rule action
+     * @param ruleObject
+     * @return
+     */
+    private String compileRuleAction(RuleObject ruleObject) {
+        StringBuilder sb = new StringBuilder();
+        StringBuilder trueSB = new StringBuilder();
+        StringBuilder falseSB = new StringBuilder();
+        for (RuleActionObject ruleActionObj: ruleObject.getRuleActionList()) {
+            if(ConstantsKt.ACTION_FLAG_YES.equalsIgnoreCase(ruleActionObj.getFlag())){
+                trueSB.append(ruleActionStatements(ruleActionObj));
+            }else {
+                falseSB.append(ruleActionStatements(ruleActionObj));
+            }
+        }
+        sb.append("if(");
+        sb.append(ruleObject.getCode());
+        sb.append(")");
+        //true branch
+        sb.append("{");
+        sb.append(trueSB);
+        sb.append("}");
+        //false branch
+        sb.append("else");
+        sb.append("{");
+        sb.append(falseSB);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * return following format:
+     * 'actionExecutor.exe(actionName, rawInputParamStr, extraMap);'
+     * @param ruleActionObj
+     * @return
+     */
+    private String ruleActionStatements(RuleActionObject ruleActionObj){
+        StringBuilder sb = new StringBuilder();
+        sb.append(ConstantsKt.ACTION_CLASS_FUNCION);
+        //left brace
+        sb.append("(");
+        //1st param: actionName
+        sb.append("\"");
+        sb.append(ruleActionObj.getActionCode());
+        sb.append("\"");
+        sb.append(",");
+        //2st param: rawInputParamStr
+        sb.append("\"");
+        sb.append(ruleActionObj.getParamsValue());
+        sb.append("\"");
+        sb.append(",");
+        //3st param: extra param
+        Map<String, String> map = new HashMap<>();
+        map.put(ConstantsKt.ACTION_MVEL_EXTARMAP, ruleActionObj.getExtraMap());
+        sb.append(RiskUtils.map2MVELString(map));
+        //right brace
+        sb.append(")");
+        //end of line
+        sb.append(";");
         return sb.toString();
     }
 
@@ -44,6 +108,8 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
      */
     private String compileRuleLogic(RuleObject ruleObject) {
         StringBuilder sb = new StringBuilder();
+        //assignment statement
+        sb.append("boolean " + ruleObject.getCode() + "=");
         for(int i=0; i< ruleObject.getRuleGroupList().size(); i++){
             RuleGroupObject ruleGroupObject = ruleObject.getRuleGroupList().get(i);
             //第一个group的逻辑符号不参与计算
@@ -57,7 +123,8 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
             //right brace
             sb.append(") ");
         }
-
+        //end of line
+        sb.append(";");
         String script = sb.toString();
         log.info("rule uuid: {} and its compiled script is: {}", ruleObject.getUuid(), script);
         return script;
