@@ -6,10 +6,12 @@ import com.mtech.risk.plugin.mvel.calc.ConstantsKt;
 import com.mtech.risk.plugin.mvel.calc.operator.Element;
 import com.mtech.risk.plugin.mvel.calc.operator.MVELOperators;
 import com.mtech.risk.plugin.service.RuleConditionCalculator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
+@Slf4j
 public class MVELRuleConditionCalculator implements RuleConditionCalculator {
     @Autowired
     private DataCalculationService dataCalculationService;
@@ -31,7 +33,10 @@ public class MVELRuleConditionCalculator implements RuleConditionCalculator {
         Element rightEl = new Element(rightValue, "String");
         //operator
         MVELOperators operatorEnum = MVELOperators.findOperationByName(operator.toUpperCase());
-        return operatorEnum.apply(leftEl, rightEl);
+        boolean rslt = operatorEnum.apply(leftEl, rightEl);
+        String sign = leftNode+ "_" + operator + "_" + rightValue;
+        log.info("{} result is {}", sign, rslt);
+        return rslt;
     }
 
     public EventContext getEventContext() {

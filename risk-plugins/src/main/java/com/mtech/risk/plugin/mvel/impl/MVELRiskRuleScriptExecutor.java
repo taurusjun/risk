@@ -180,7 +180,7 @@ public class MVELRiskRuleScriptExecutor implements RiskRuleScriptExecutor {
         map.put(ConstantsKt.CONDITION_CALC_CLASS_INSTANCE, ruleConditionCalculator);
         map.put(ConstantsKt.ACTION_CLASS_INSTANCE, actionExecutor);
         //execute
-        boolean rslt2 = (boolean)MVEL.executeExpression(sScirpt, map);
-        return rslt2;
+        MVEL.executeExpression(sScirpt, map);
+        return true;
     }
 }
