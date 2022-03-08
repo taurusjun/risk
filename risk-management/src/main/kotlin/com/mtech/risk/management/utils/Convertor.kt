@@ -94,7 +94,11 @@ class Convertor {
             if (ruleActionList != null) {
                 for (ruleAction: RuleAction in ruleActionList){
                     val ruleActionVO = convertRuleActionToVO(ruleAction)
-                    ruleWithActionsVO.getRuleActionVOList().add(ruleActionVO)
+                    if(ruleAction.flag.equals("Y", ignoreCase = true)){
+                        ruleWithActionsVO.getRuleIsTrueActions().add(ruleActionVO)
+                    }else{
+                        ruleWithActionsVO.getRuleIsFalseActions().add(ruleActionVO)
+                    }
                 }
             }
 
@@ -104,7 +108,6 @@ class Convertor {
         fun convertRuleActionToVO(ruleAction: RuleAction): RuleActionVO {
             val ruleActionVO = RuleActionVO()
             ruleActionVO.setUuid(ruleAction.uuid)
-            ruleActionVO.setFlag(ruleAction.flag)
             ruleActionVO.setActionCode(ruleAction.actionCode)
             ruleActionVO.setParamsValue(ruleAction.paramsValue)
             ruleActionVO.setExtraMap(ruleAction.extraMap)

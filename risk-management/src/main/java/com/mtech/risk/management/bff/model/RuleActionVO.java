@@ -2,7 +2,6 @@ package com.mtech.risk.management.bff.model;
 
 public class RuleActionVO {
     String uuid;
-    String flag;
     String actionCode;
     String paramsValue;
     String extraMap;
@@ -13,14 +12,6 @@ public class RuleActionVO {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public String getFlag() {
-        return flag;
-    }
-
-    public void setFlag(String flag) {
-        this.flag = flag;
     }
 
     public String getActionCode() {

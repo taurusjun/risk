@@ -5,7 +5,8 @@ import java.util.List;
 
 public class RuleWithActionsVO {
     String uuid;
-    List<RuleActionVO> ruleActionVOList = new ArrayList<>();
+    List<RuleActionVO> ruleIsTrueActions = new ArrayList<>();
+    List<RuleActionVO> ruleIsFalseActions = new ArrayList<>();
 
     public String getUuid() {
         return uuid;
@@ -15,11 +16,19 @@ public class RuleWithActionsVO {
         this.uuid = uuid;
     }
 
-    public List<RuleActionVO> getRuleActionVOList() {
-        return ruleActionVOList;
+    public List<RuleActionVO> getRuleIsTrueActions() {
+        return ruleIsTrueActions;
     }
 
-    public void setRuleActionVOList(List<RuleActionVO> ruleActionVOList) {
-        this.ruleActionVOList = ruleActionVOList;
+    public void setRuleIsTrueActions(List<RuleActionVO> ruleIsTrueActions) {
+        this.ruleIsTrueActions = ruleIsTrueActions;
+    }
+
+    public List<RuleActionVO> getRuleIsFalseActions() {
+        return ruleIsFalseActions;
+    }
+
+    public void setRuleIsFalseActions(List<RuleActionVO> ruleIsFalseActions) {
+        this.ruleIsFalseActions = ruleIsFalseActions;
     }
 }
