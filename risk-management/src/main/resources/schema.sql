@@ -71,6 +71,15 @@ CREATE TABLE action_dict
     UNIQUE(code)
 );
 
+DROP TABLE IF EXISTS tag_dict;
+CREATE TABLE tag_dict
+(
+    id  INTEGER PRIMARY KEY auto_increment,
+    code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
+    description   VARCHAR(256) NOT NULL COMMENT 'description',
+    UNIQUE(code)
+);
+
 DROP TABLE IF EXISTS rule_action;
 CREATE TABLE rule_action
 (

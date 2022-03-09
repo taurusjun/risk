@@ -2,6 +2,7 @@ package com.mtech.risk.management.controller.spa
 
 import com.mtech.risk.dataio.service.ActionDefService
 import com.mtech.risk.dataio.service.RuleService
+import com.mtech.risk.dataio.service.TagDictService
 import com.mtech.risk.management.bff.model.RuleVO
 import com.mtech.risk.management.response.Result
 import com.mtech.risk.management.service.RuleDataMngService
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/RulePage")
 class RulePageController(@Autowired private val ruleService: RuleService,
                          @Autowired private val ruleDataMngService: RuleDataMngService,
-                         @Autowired private val actionDefService: ActionDefService
+                         @Autowired private val actionDefService: ActionDefService,
+                         @Autowired private val tagDictService: TagDictService
                          ) {
 
     @GetMapping("/list")
@@ -24,17 +26,28 @@ class RulePageController(@Autowired private val ruleService: RuleService,
         return ResponseEntity.status(HttpStatus.OK).body(Result.ok(ruleVOList))
     }
 
-    @GetMapping("/logic")
+    @GetMapping("/rule")
     fun getLogicInfo(@RequestParam uuid : String): ResponseEntity<Result<Map<String, Any>>> {
-        val ruleVO = ruleDataMngService.ruleLogicVOQuery(uuid)
+        val ruleLogicVO = ruleDataMngService.ruleLogicVOQuery(uuid)
+        val ruleWithActionsVO = ruleDataMngService.ruleActionVOQuery(uuid)
         val variables = ruleService.getAllRuleConditionElements()
         val operators = ruleService.getAllRuleConditionOperators()
+        val actionDefs = actionDefService.getAllActionDef()
+        val tags = tagDictService.getAllTags()
+
         val map: MutableMap<String, Any> = mutableMapOf()
-        if (ruleVO != null) {
-            map["rule"] = ruleVO
+        if (ruleLogicVO != null) {
+            map["ruleLogic"] = ruleLogicVO
         }
+        map["ruleAction"] = ruleWithActionsVO
         map["variablesArray"] = variables
         map["operatorsArray"] = operators
+        if(actionDefs!=null){
+            map["actionDefs"] = actionDefs
+        }
+        if(tags!=null){
+            map["tagDict"] = tags
+        }
         return ResponseEntity.status(HttpStatus.OK).body(Result.ok(map))
     }
 

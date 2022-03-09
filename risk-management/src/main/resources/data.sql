@@ -48,9 +48,14 @@ VALUES ( 'lt','小于','Number','数值测试用');
 INSERT INTO action_dict ( code, name, params_type)
 VALUES ( 'addTag','加入标签','List');
 
+-- tag_dict
+INSERT INTO tag_dict ( code, description) VALUES ( 'highRisk','高风险');
+INSERT INTO tag_dict ( code, description) VALUES ( 'ATO','账号被盗风险');
+INSERT INTO tag_dict ( code, description) VALUES ( 'safeEnv','安全环境');
+
 -- rule action
 INSERT INTO rule_action ( uuid, flag, rule_uuid, action_code, params_value, extra_map)
-VALUES ( '66243293-43d3-4af4-a9d9-026abb5af9ae','Y','96668402-87fc-11ec-a8a3-0242ac120002','addTag','[\"highRisk\",\"ATO\"]',null);
+VALUES ( '66243293-43d3-4af4-a9d9-026abb5af9ae','Y','96668402-87fc-11ec-a8a3-0242ac120002','addTag','["highRisk","ATO"]',null);
 
 ------- mock compiled script -----
 
