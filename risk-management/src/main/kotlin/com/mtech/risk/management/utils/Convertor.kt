@@ -115,6 +115,39 @@ class Convertor {
         }
 
         /**
+         * rule action UI to rule action domain model
+         */
+        fun convertVOToRuleActionList(ruleWithActionsVO: RuleWithActionsVO): List<RuleAction> {
+            val ruleIsTrueActionList = ruleWithActionsVO.getRuleIsTrueActions()
+            val ruleIsFalseActionList = ruleWithActionsVO.getRuleIsFalseActions()
+            val ruleUUID = ruleWithActionsVO.getUuid()
+
+            val ruleActionList = mutableListOf<RuleAction>()
+            for (trueAction: RuleActionVO in ruleIsTrueActionList){
+                val ruleAction = convertVOToRuleAction(trueAction, "Y", ruleUUID)
+                ruleActionList.add(ruleAction)
+            }
+            for (falseAction: RuleActionVO in ruleIsFalseActionList){
+                val ruleAction = convertVOToRuleAction(falseAction, "N", ruleUUID)
+                ruleActionList.add(ruleAction)
+            }
+
+            return  ruleActionList
+        }
+
+        fun convertVOToRuleAction(ruleActionVO: RuleActionVO, flag: String, ruleUUID: String): RuleAction {
+            return RuleAction(
+                0,
+                ruleActionVO.getUuid(),
+                flag,
+                ruleUUID,
+                ruleActionVO.getActionCode(),
+                ruleActionVO.getParamsValue(),
+                ruleActionVO.getExtraMap()
+            )
+        }
+
+        /**
          * convert rule to rule vo
          */
         fun convertRuleToVO(rule: Rule): RuleVO {

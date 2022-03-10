@@ -54,7 +54,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     }
 
     /**
-     * Cascade rule update
+     * Cascade rule logic update
      */
     fun ruleLogicUpdate(ruleVO: RuleLogicVO) {
         val rule = Convertor.convertVOToRuleLogic(ruleVO)
@@ -71,9 +71,9 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     }
 
     /**
-     * Cascade rule insert
+     * Cascade rule logic insert
      */
-    fun ruleInsert(ruleVO: RuleLogicVO) {
+    fun ruleLogicInsert(ruleVO: RuleLogicVO) {
         ruleVO.uuid = UUID.randomUUID().toString()
         val rule = Convertor.convertVOToRuleLogic(ruleVO)
 
@@ -82,6 +82,18 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
             ruleService.insertNewRuleCascade(rule)
         }
         this.reCompileAndSaveRule(ruleVO.uuid, true)
+    }
+
+    /**
+     * Cascade rule action update
+     */
+    fun ruleActionUpdate(ruleWithActionsVO: RuleWithActionsVO) {
+        val ruleActionList = Convertor.convertVOToRuleActionList(ruleWithActionsVO)
+        ///////
+        transactionTemplate.execute {
+            ruleService.updateRuleActionCascade(ruleWithActionsVO.uuid, ruleActionList)
+        }
+        this.reCompileAndSaveRule(ruleWithActionsVO.uuid, false)
     }
 
     /**

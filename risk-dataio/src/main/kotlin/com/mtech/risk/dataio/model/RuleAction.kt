@@ -1,8 +1,8 @@
 package com.mtech.risk.dataio.model
 
 data class RuleAction (
-    val id:Integer,
-    val uuid:String,
+    val id:Int,
+    var uuid:String?,
     val flag:String,
     val ruleUUID:String,
     val actionCode:String,

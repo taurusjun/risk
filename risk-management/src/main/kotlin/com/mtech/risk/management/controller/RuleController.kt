@@ -3,6 +3,7 @@ package com.mtech.risk.management.controller
 import com.mtech.risk.dataio.model.*
 import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleLogicVO
+import com.mtech.risk.management.bff.model.RuleWithActionsVO
 import com.mtech.risk.management.response.Result
 import com.mtech.risk.management.service.RuleDataMngService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,16 +16,22 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/rule")
 class RuleController(@Autowired private val ruleService: RuleService,@Autowired private val ruleDataMngService: RuleDataMngService) {
 
-    @PostMapping("/update")
-    fun ruleUpdate(@RequestBody ruleVO: RuleLogicVO) {
+    @PostMapping("/logicUpdate")
+    fun ruleLogicUpdate(@RequestBody ruleLogicVO: RuleLogicVO) {
         ResponseEntity.status(HttpStatus.OK)
-            .body(ruleDataMngService.ruleLogicUpdate(ruleVO))
+            .body(ruleDataMngService.ruleLogicUpdate(ruleLogicVO))
     }
 
-    @PostMapping("/create")
-    fun rulInsert(@RequestBody ruleVO: RuleLogicVO) {
+    @PostMapping("/logicCreate")
+    fun ruleLogicInsert(@RequestBody ruleLogicVO: RuleLogicVO) {
         ResponseEntity.status(HttpStatus.OK)
-            .body(ruleDataMngService.ruleInsert(ruleVO))
+            .body(ruleDataMngService.ruleLogicInsert(ruleLogicVO))
+    }
+
+    @PostMapping("/actionUpdate")
+    fun ruleActionUpdate(@RequestBody ruleWithActionsVO: RuleWithActionsVO) {
+        ResponseEntity.status(HttpStatus.OK)
+            .body(ruleDataMngService.ruleActionUpdate(ruleWithActionsVO))
     }
 
     @GetMapping("/exe/{uuid}")

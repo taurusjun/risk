@@ -105,6 +105,29 @@ open class RuleService(@Autowired private val ruleDAO: RuleDAO, @Autowired priva
         return ruleDAO.deleteMutiRuleCondition(ruleGroupUuid, notDeleteUuidSet)
     }
 
+    /**
+     * update rule actions cascade
+     */
+    fun updateRuleActionCascade(ruleUUID:String, ruleActionList: List<RuleAction>){
+        if(ruleUUID==null){
+            throw RuntimeException("ruleUUID is null when update rule action cascade")
+        }
+        //update & insert
+        val uuidSet = mutableSetOf<String>()
+        for(ruleAction in ruleActionList){
+            if(ruleAction.uuid !=null){
+                ruleDAO.updateRuleAction(ruleAction)
+            }else{
+                ruleAction.uuid = UUID.randomUUID().toString()
+                ruleDAO.insertRuleAction(ruleAction)
+            }
+            uuidSet.add(ruleAction.uuid!!)
+        }
+        //delete
+        ruleDAO.deleteMutiRuleActions(ruleUUID, uuidSet)
+    }
+
+
     fun getRuleVersion(uuid:String): Int =
         ruleDAO.getRuleVersionByUuid(uuid)
 

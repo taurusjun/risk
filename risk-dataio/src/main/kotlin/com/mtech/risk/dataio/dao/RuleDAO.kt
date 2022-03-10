@@ -129,9 +129,18 @@ interface RuleDAO {
     @Select("select * from rule_action where rule_uuid=#{ruleUUID}")
     fun getRuleActionListByRuleUUID(ruleUUID:String):List<RuleAction>?
 
-    @Insert("INSERT INTO rule_action ( uuid, rule_uuid, flag, action_code, params_value, extra_map) VALUES ( #{uuid}, #{flag}, #{ruleUUID}, #{actionCode}, #{paramsValue}, #{extraMap})")
+    @Insert("INSERT INTO rule_action ( uuid, rule_uuid, flag, action_code, params_value, extra_map) VALUES ( #{uuid}, #{ruleUUID}, #{flag}, #{actionCode}, #{paramsValue}, #{extraMap})")
     fun insertRuleAction(ruleAction: RuleAction):Boolean
 
     @Update("update rule_action set rule_uuid = #{ruleUUID}, flag=#{flag}, action_code = #{actionCode}, params_value = #{paramsValue}, extra_map = #{extraMap} where uuid = #{uuid}")
     fun updateRuleAction(ruleAction: RuleAction):Boolean
+
+    @Delete("<script>"  +
+            "delete from rule_action where rule_uuid=#{ruleUuid} and uuid not in " +
+            "<foreach collection='set' item='item' open='(' separator=',' close=')'> " +
+            "#{item}" +
+            "</foreach>" +
+            "</script>"
+    )
+    fun deleteMutiRuleActions(@Param("ruleUuid") ruleUuid:String, @Param("set") uuidSet:Set<String>):Boolean
 }
