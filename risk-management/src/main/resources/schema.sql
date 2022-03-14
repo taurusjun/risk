@@ -129,8 +129,7 @@ CREATE TABLE sub_event
     description VARCHAR(256),
     status VARCHAR(64) NOT NULL COMMENT 'online/offline/deleted/wait',
     json_properties text COMMENT '合并并且覆盖父事件里的json的key',
-    UNIQUE (code),
-    UNIQUE (uuid)
+    UNIQUE (code, uuid)
 );
 
 
@@ -141,3 +140,55 @@ CREATE TABLE rule_event
     rule_uuid  VARCHAR(128) NOT NULL COMMENT 'rule uuid',
     event_uuid VARCHAR(128) NOT NULL COMMENT 'event uuid'
 );
+
+DROP TABLE IF EXISTS strategy;
+CREATE TABLE strategy
+(
+    id  INTEGER PRIMARY KEY auto_increment,
+    uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
+    code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
+    description VARCHAR(256),
+    start_node_uuid  VARCHAR(128) NOT NULL COMMENT 'node uuid',
+    create_time TIMESTAMP WITH TIME ZONE,
+    update_time TIMESTAMP WITH TIME ZONE,
+    UNIQUE (uuid, code, start_node_uuid)
+) ;
+
+DROP TABLE IF EXISTS strategy_node;
+CREATE TABLE strategy_node
+(
+    id  INTEGER PRIMARY KEY auto_increment,
+    uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
+    code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
+    description VARCHAR(256),
+    type VARCHAR(64) NOT NULL COMMENT 'start/common/result',
+    weight     INTEGER DEFAULT 0 COMMENT 'when type is common: weight',
+    rule_uuid  VARCHAR(128) COMMENT 'when type is start: rule uuid',
+    result  VARCHAR(128) COMMENT 'when type is result: reject/accept/verification',
+    strategy_uuid  VARCHAR(128) NOT NULL COMMENT 'strategy uuid',
+    create_time TIMESTAMP WITH TIME ZONE,
+    update_time TIMESTAMP WITH TIME ZONE,
+    UNIQUE (uuid, code, rule_uuid)
+) ;
+
+DROP TABLE IF EXISTS strategy_node_action;
+CREATE TABLE strategy_node_action
+(
+    id         INTEGER PRIMARY KEY auto_increment,
+    uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
+    strategy_node_uuid  VARCHAR(128) NOT NULL COMMENT 'node uuid',
+    action_code VARCHAR(128) NOT NULL COMMENT 'action code'
+);
+
+DROP TABLE IF EXISTS strategy_connect;
+CREATE TABLE strategy_connect
+(
+    id  INTEGER PRIMARY KEY auto_increment,
+    uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
+    from_node_uuid     VARCHAR(128) NOT NULL COMMENT 'from node uuid',
+    to_node_uuid     VARCHAR(128) NOT NULL COMMENT 'to node uuid',
+    logic     VARCHAR(64) NOT NULL COMMENT 'from_node的逻辑为Y/N/Any时，连接to_node',
+    create_time TIMESTAMP WITH TIME ZONE,
+    update_time TIMESTAMP WITH TIME ZONE,
+    UNIQUE (uuid)
+) ;
