@@ -149,8 +149,8 @@ CREATE TABLE strategy
     code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
     description VARCHAR(256),
     start_node_uuid  VARCHAR(128) NOT NULL COMMENT 'node uuid',
-    create_time TIMESTAMP WITH TIME ZONE,
-    update_time TIMESTAMP WITH TIME ZONE,
+    create_time TIMESTAMP DEFAULT current_timestamp,
+    update_time TIMESTAMP DEFAULT current_timestamp on update current_timestamp,
     UNIQUE (uuid, code, start_node_uuid)
 ) ;
 
@@ -162,12 +162,12 @@ CREATE TABLE strategy_node
     code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
     description VARCHAR(256),
     type VARCHAR(64) NOT NULL COMMENT 'start/common/result',
-    weight     INTEGER DEFAULT 0 COMMENT 'when type is common: weight',
-    rule_uuid  VARCHAR(128) COMMENT 'when type is start: rule uuid',
+    weight     INTEGER NOT NULL DEFAULT 0 COMMENT 'when type is common: weight',
+    rule_uuid  VARCHAR(128) COMMENT 'when type is common: rule uuid',
     result  VARCHAR(128) COMMENT 'when type is result: reject/accept/verification',
     strategy_uuid  VARCHAR(128) NOT NULL COMMENT 'strategy uuid',
-    create_time TIMESTAMP WITH TIME ZONE,
-    update_time TIMESTAMP WITH TIME ZONE,
+    create_time TIMESTAMP DEFAULT current_timestamp,
+    update_time TIMESTAMP DEFAULT current_timestamp on update current_timestamp,
     UNIQUE (uuid, code, rule_uuid)
 ) ;
 
@@ -188,7 +188,7 @@ CREATE TABLE strategy_connect
     from_node_uuid     VARCHAR(128) NOT NULL COMMENT 'from node uuid',
     to_node_uuid     VARCHAR(128) NOT NULL COMMENT 'to node uuid',
     logic     VARCHAR(64) NOT NULL COMMENT 'from_node的逻辑为Y/N/Any时，连接to_node',
-    create_time TIMESTAMP WITH TIME ZONE,
-    update_time TIMESTAMP WITH TIME ZONE,
+    create_time TIMESTAMP DEFAULT current_timestamp,
+    update_time TIMESTAMP DEFAULT current_timestamp on update current_timestamp,
     UNIQUE (uuid)
 ) ;

@@ -62,24 +62,24 @@ INSERT INTO rule_compiled_script(rule_uuid, language, dialect, script, version)
 VALUES ('96668402-87fc-11ec-a8a3-0242ac120002', 'java', 'MVEL', 'boolean rule001= ( ruleConditionCalculator.calc("testVar001","gt","0",["leftReturnType":"Number","leftIdentifyType":"variable","operatorCode":"gt"]) ) && ( ruleConditionCalculator.calc("testVar002","contains","a",["leftReturnType":"List_String","leftIdentifyType":"variable","operatorCode":"contains"]) || ruleConditionCalculator.calc("testVar003","lt","99",["leftReturnType":"Number","leftIdentifyType":"variable","operatorCode":"lt"]) ) ;if(rule001){actionExecutor.exe("addTag","[\"highRisk\",\"ATO\"]",["rawActionExtraMap":"null"]);}else{}', 1);
 
 -- strategy
-INSERT INTO strategy ( uuid, code, description, start_node_uuid, create_time, update_time)
-values('d68c07d6-a3af-11ec-b909-0242ac120002', 'strategy_001', '', 'f049ff84-a3af-11ec-b909-0242ac120002', now(), now());
+INSERT INTO strategy ( uuid, code, description, start_node_uuid)
+values('d68c07d6-a3af-11ec-b909-0242ac120002', 'strategy_001', '', 'f049ff84-a3af-11ec-b909-0242ac120002');
 
 -- strategy_node
 ---- start
-INSERT INTO strategy_node ( uuid, code, description, type, weight, rule_uuid, result, strategy_uuid, create_time, update_time)
-values('f049ff84-a3af-11ec-b909-0242ac120002', 'start_node_001', '', 'start', null, null, null, 'd68c07d6-a3af-11ec-b909-0242ac120002', now(), now());
+INSERT INTO strategy_node ( uuid, code, description, type, weight, rule_uuid, result, strategy_uuid)
+values('f049ff84-a3af-11ec-b909-0242ac120002', 'start_node_001', '', 'start', 0, null, null, 'd68c07d6-a3af-11ec-b909-0242ac120002');
 ---- common
-INSERT INTO strategy_node ( uuid, code, description, type, weight, rule_uuid, result, strategy_uuid, create_time, update_time)
-values('82d63dad-d7d7-4c55-a7c6-211cfc4e67a6', 'common_node_001', '', 'common', 100, '96668402-87fc-11ec-a8a3-0242ac120002', null, 'd68c07d6-a3af-11ec-b909-0242ac120002', now(), now());
+INSERT INTO strategy_node ( uuid, code, description, type, weight, rule_uuid, result, strategy_uuid)
+values('82d63dad-d7d7-4c55-a7c6-211cfc4e67a6', 'common_node_001', '', 'common', 100, '96668402-87fc-11ec-a8a3-0242ac120002', null, 'd68c07d6-a3af-11ec-b909-0242ac120002');
 ---- result
-INSERT INTO strategy_node ( uuid, code, description, type, weight, rule_uuid, result, strategy_uuid, create_time, update_time)
-values('319bff6b-164c-43dd-a40e-1ecd0e49d43a', 'result_node_001', '', 'result', null, null, 'reject', 'd68c07d6-a3af-11ec-b909-0242ac120002', now(), now());
+INSERT INTO strategy_node ( uuid, code, description, type, weight, rule_uuid, result, strategy_uuid)
+values('319bff6b-164c-43dd-a40e-1ecd0e49d43a', 'result_node_001', '', 'result', 0, null, 'reject', 'd68c07d6-a3af-11ec-b909-0242ac120002');
 
 -- strategy_connect
 --- start->common
-INSERT INTO strategy_connect ( uuid, from_node_uuid, to_node_uuid, logic, create_time, update_time)
-values('6a089acb-935e-444c-8da9-8130139a91cf', 'f049ff84-a3af-11ec-b909-0242ac120002', '82d63dad-d7d7-4c55-a7c6-211cfc4e67a6', 'Any', now(), now());
+INSERT INTO strategy_connect ( uuid, from_node_uuid, to_node_uuid, logic)
+values('6a089acb-935e-444c-8da9-8130139a91cf', 'f049ff84-a3af-11ec-b909-0242ac120002', '82d63dad-d7d7-4c55-a7c6-211cfc4e67a6', 'Any');
 --- common->result
-INSERT INTO strategy_connect ( uuid, from_node_uuid, to_node_uuid, logic, create_time, update_time)
-values('bbe59ac5-132a-4d3b-b787-a4f3bc7da9c3', '82d63dad-d7d7-4c55-a7c6-211cfc4e67a6', '319bff6b-164c-43dd-a40e-1ecd0e49d43a', 'Y', now(), now());
+INSERT INTO strategy_connect ( uuid, from_node_uuid, to_node_uuid, logic)
+values('bbe59ac5-132a-4d3b-b787-a4f3bc7da9c3', '82d63dad-d7d7-4c55-a7c6-211cfc4e67a6', '319bff6b-164c-43dd-a40e-1ecd0e49d43a', 'Y');
