@@ -5,10 +5,10 @@ import org.apache.ibatis.annotations.*
 
 @Mapper
 interface StrategyDAO {
-    @Select("select id, uuid, code, description, start_node_uuid from strategy where uuid=#{uuid}")
+    @Select("select id, uuid, code, description from strategy where uuid=#{uuid}")
     @Results(value = [
-        Result(property = "startNode", column = "start_node_uuid",
-            one = One(select = "com.mtech.risk.dataio.dao.StrategyDAO.getSingleStrategyNodesByUuid")
+        Result(property = "startNode", column = "uuid",
+            one = One(select = "com.mtech.risk.dataio.dao.StrategyDAO.getSingleStartNodeByStrategyUuid")
         ),
         Result(property = "nodes", column = "uuid",
             many = Many(select = "com.mtech.risk.dataio.dao.StrategyDAO.getStrategyNodesAndConnectByStrategyUUID")
@@ -16,10 +16,10 @@ interface StrategyDAO {
     ])
     fun getSingleStrategyWithNodesAndConnectByUUID(uuid: String): StrategyWithNodesAndConnectPojo?
 
-    @Select("select id, uuid, description, start_node_uuid from strategy")
+    @Select("select id, uuid, description from strategy")
     fun getAllStrategy(): List<StrategyPojo>?
 
-    @Select("select id, uuid, description, start_node_uuid from strategy where uuid=#{uuid}")
+    @Select("select id, uuid, description from strategy where uuid=#{uuid}")
     fun getSingleStrategyByUUID(uuid: String): StrategyPojo?
 
     @Select("select id, uuid, code, description, type, weight, rule_uuid, result, strategy_uuid  from strategy_node where strategy_uuid=#{strategyUUID}")
@@ -29,6 +29,9 @@ interface StrategyDAO {
         )
     ])
     fun getStrategyNodesAndConnectByStrategyUUID(strategyUUID: String): List<StrategyNodeWithConnectPojo>?
+
+    @Select("select id, uuid, code, description, type, weight, rule_uuid, result, strategy_uuid from strategy_node where type='start' and strategy_uuid=#{strategyUUID}")
+    fun getSingleStartNodeByStrategyUuid(strategyUUID: String): StrategyNodePojo?
 
     @Select("select id, uuid, code, description, type, weight, rule_uuid, result, strategy_uuid  from strategy_node where uuid=#{uuid}")
     fun getSingleStrategyNodesByUuid(uuid: String): StrategyNodePojo?

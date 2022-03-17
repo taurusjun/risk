@@ -5,5 +5,4 @@ data class StrategyPojo(
     val uuid: String,
     val code: String,
     val description: String?,
-    val startNodeUuid: String,
 )

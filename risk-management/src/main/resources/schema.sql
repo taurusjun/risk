@@ -148,10 +148,9 @@ CREATE TABLE strategy
     uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',
     code     VARCHAR(128) NOT NULL COMMENT 'code must be unique',
     description VARCHAR(256),
-    start_node_uuid  VARCHAR(128) NOT NULL COMMENT 'node uuid',
     create_time TIMESTAMP DEFAULT current_timestamp,
     update_time TIMESTAMP DEFAULT current_timestamp on update current_timestamp,
-    UNIQUE (uuid, code, start_node_uuid)
+    UNIQUE (uuid, code)
 ) ;
 
 DROP TABLE IF EXISTS strategy_node;
