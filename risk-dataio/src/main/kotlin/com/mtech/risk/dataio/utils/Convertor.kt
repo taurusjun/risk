@@ -60,17 +60,14 @@ class Convertor {
             val startNode = convertStrategyNodePojo2StrategyNode(strategyWithNodesAndConnectPojo.startNode)
             strategyComplete.setStartNode(startNode)
             //graph
-            val graph = mutableMapOf<StrategyNode, List<StrategyNode>>()
+            val graph = mutableMapOf<StrategyNode, List<StrategyConnect>>()
             val strategyNodeWithConnectPojoList = strategyWithNodesAndConnectPojo.nodes
             for(strategyNodeWithConnectPojo:StrategyNodeWithConnectPojo in strategyNodeWithConnectPojoList){
                 val strategyNodeWithConnect:StrategyNodeWithConnect = convertStrategyNodeWithConnectPojo2StrategyNodeWithConnect(strategyNodeWithConnectPojo)
                 val fromNode = strategyNodeWithConnect.strategyNode
                 val toNodeList = mutableListOf<StrategyNode>()
                 val connectList: List<StrategyConnect> = strategyNodeWithConnect.connects
-                for(strategyConnect:StrategyConnect in connectList){
-                    toNodeList.add(strategyConnect.getToNode())
-                }
-                graph[fromNode] = toNodeList
+                graph[fromNode] = connectList
             }
             strategyComplete.setGraph(graph)
             return  strategyComplete;

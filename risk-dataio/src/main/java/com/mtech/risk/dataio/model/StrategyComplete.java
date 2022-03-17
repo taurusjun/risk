@@ -13,7 +13,7 @@ public class StrategyComplete {
     /**
      * 邻接矩阵
      */
-    Map<StrategyNode, List<StrategyNode>> graph;
+    Map<StrategyNode, List<StrategyConnect>> graph;
 
     public int getId() {
         return id;
@@ -55,11 +55,11 @@ public class StrategyComplete {
         this.startNode = startNode;
     }
 
-    public Map<StrategyNode, List<StrategyNode>> getGraph() {
+    public Map<StrategyNode, List<StrategyConnect>> getGraph() {
         return graph;
     }
 
-    public void setGraph(Map<StrategyNode, List<StrategyNode>> graph) {
+    public void setGraph(Map<StrategyNode, List<StrategyConnect>> graph) {
         this.graph = graph;
     }
 }
