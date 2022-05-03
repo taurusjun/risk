@@ -18,7 +18,7 @@ public class StrategyOuterModel {
     //结果节点列表，多个
     List<StrategyNode> resultNodes;
     //出节点，到别的策略的
-    Map<StrategyNode, List<StrategyNodesConnect>> outerNodeMap;
+    Map<StrategyNode, List<StrategyNodesConnect>> outerNodesMap;
 
     public int getId() {
         return id;
@@ -68,11 +68,11 @@ public class StrategyOuterModel {
         this.resultNodes = resultNodes;
     }
 
-    public Map<StrategyNode, List<StrategyNodesConnect>> getOuterNodeMap() {
-        return outerNodeMap;
+    public Map<StrategyNode, List<StrategyNodesConnect>> getOuterNodesMap() {
+        return outerNodesMap;
     }
 
-    public void setOuterNodeMap(Map<StrategyNode, List<StrategyNodesConnect>> outerNodeMap) {
-        this.outerNodeMap = outerNodeMap;
+    public void setOuterNodesMap(Map<StrategyNode, List<StrategyNodesConnect>> outerNodesMap) {
+        this.outerNodesMap = outerNodesMap;
     }
 }

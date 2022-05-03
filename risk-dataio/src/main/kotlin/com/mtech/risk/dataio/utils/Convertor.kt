@@ -128,7 +128,7 @@ class Convertor {
                 }
             }
             strategyOuterModel.setResultNodes(resultNodes)
-            strategyOuterModel.setOuterNodeMap(outerNodeMap)
+            strategyOuterModel.setOuterNodesMap(outerNodeMap)
             return  strategyOuterModel;
         }
 
