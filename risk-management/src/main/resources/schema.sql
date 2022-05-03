@@ -179,8 +179,8 @@ CREATE TABLE strategy_node_action
     action_code VARCHAR(128) NOT NULL COMMENT 'action code'
 );
 
-DROP TABLE IF EXISTS strategy_connect;
-CREATE TABLE strategy_connect
+DROP TABLE IF EXISTS strategy_node_connect;
+CREATE TABLE strategy_node_connect
 (
     id  INTEGER PRIMARY KEY auto_increment,
     uuid     VARCHAR(128) NOT NULL COMMENT 'uuid',

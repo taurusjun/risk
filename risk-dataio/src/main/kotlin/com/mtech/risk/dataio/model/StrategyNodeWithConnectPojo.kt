@@ -11,5 +11,5 @@ data class StrategyNodeWithConnectPojo(
     val result: String?,
     val strategyUuid: String,
 ) {
-    lateinit var connects: List<StrategyConnectWithNodeDetailsPojo>
+    lateinit var connects: List<StrategyNodeConnectWithNodeDetailsPojo>
 }

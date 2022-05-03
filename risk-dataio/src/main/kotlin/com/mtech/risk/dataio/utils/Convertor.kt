@@ -4,6 +4,9 @@ import com.mtech.risk.dataio.model.*
 
 class Convertor {
     companion object{
+        /**
+         * Pojo to model
+         */
         fun convertStrategyNodePojo2StrategyNode(strategyNodePojo: StrategyNodePojo):StrategyNode{
             return buildStrategyNode(
                 strategyNodePojo.id,
@@ -18,6 +21,9 @@ class Convertor {
             )
         }
 
+        /**
+         * pojo to model
+         */
         fun convertStrategyNodeWithConnectPojo2StrategyNodeWithConnect(strategyNodeWithConnectPojo: StrategyNodeWithConnectPojo):StrategyNodeWithConnect {
             val strategyNodeWithConnect: StrategyNodeWithConnect = StrategyNodeWithConnect()
             //// build node
@@ -36,43 +42,95 @@ class Convertor {
             //// build connect list
             strategyNodeWithConnect.setConnects(mutableListOf())
             val connectWithNodeDetailsList = strategyNodeWithConnectPojo.connects
-            for(strategyConnectWithNodeDetailsPojo: StrategyConnectWithNodeDetailsPojo in connectWithNodeDetailsList){
-                val fromNodePojo = strategyConnectWithNodeDetailsPojo.fromNode
+            for(strategyNodeConnectWithNodeDetailsPojo: StrategyNodeConnectWithNodeDetailsPojo in connectWithNodeDetailsList){
+                val fromNodePojo = strategyNodeConnectWithNodeDetailsPojo.fromNode
                 val fromNode = convertStrategyNodePojo2StrategyNode(fromNodePojo)
-                val toNodePojo = strategyConnectWithNodeDetailsPojo.toNode
+                val toNodePojo = strategyNodeConnectWithNodeDetailsPojo.toNode
                 val toNode = convertStrategyNodePojo2StrategyNode(toNodePojo)
-                val strategyConnect = StrategyConnect(strategyConnectWithNodeDetailsPojo.id, strategyConnectWithNodeDetailsPojo.uuid, strategyConnectWithNodeDetailsPojo.logic, fromNode, toNode)
-                strategyNodeWithConnect.getConnects().add(strategyConnect)
+                val strategyNodesConnect = StrategyNodesConnect(
+                    strategyNodeConnectWithNodeDetailsPojo.id,
+                    strategyNodeConnectWithNodeDetailsPojo.uuid,
+                    strategyNodeConnectWithNodeDetailsPojo.logic,
+                    fromNode,
+                    toNode
+                )
+                strategyNodeWithConnect.getConnects().add(strategyNodesConnect)
             }
 
             return strategyNodeWithConnect
         }
 
-
-        fun convertStrategyWithNodeAndConnectPojo2StrategyComplete(strategyWithNodesAndConnectPojo: StrategyWithNodesAndConnectPojo):StrategyComplete {
-            val strategyComplete = StrategyComplete()
+        /**
+         * 转为策略内部模型
+         */
+        fun convertStrategyWithNodeAndConnectPojo2StrategyInnerDetail(strategyWithNodesAndConnectPojo: StrategyWithNodesAndConnectPojo): StrategyInnerDetail {
+            val strategyInnerDetail = StrategyInnerDetail()
             //base info
-            strategyComplete.setId(strategyWithNodesAndConnectPojo.id)
-            strategyComplete.setUuid(strategyWithNodesAndConnectPojo.uuid)
-            strategyComplete.setCode(strategyWithNodesAndConnectPojo.code)
-            strategyComplete.setDescription(strategyWithNodesAndConnectPojo.description)
+            strategyInnerDetail.setId(strategyWithNodesAndConnectPojo.id)
+            strategyInnerDetail.setUuid(strategyWithNodesAndConnectPojo.uuid)
+            strategyInnerDetail.setCode(strategyWithNodesAndConnectPojo.code)
+            strategyInnerDetail.setDescription(strategyWithNodesAndConnectPojo.description)
             //start node
             val startNode = convertStrategyNodePojo2StrategyNode(strategyWithNodesAndConnectPojo.startNode)
-            strategyComplete.setStartNode(startNode)
+            strategyInnerDetail.setStartNode(startNode)
             //graph
-            val graph = mutableMapOf<StrategyNode, List<StrategyConnect>>()
+            val graph = mutableMapOf<StrategyNode, List<StrategyNodesConnect>>()
             val strategyNodeWithConnectPojoList = strategyWithNodesAndConnectPojo.nodes
             for(strategyNodeWithConnectPojo:StrategyNodeWithConnectPojo in strategyNodeWithConnectPojoList){
                 val strategyNodeWithConnect:StrategyNodeWithConnect = convertStrategyNodeWithConnectPojo2StrategyNodeWithConnect(strategyNodeWithConnectPojo)
                 val fromNode = strategyNodeWithConnect.strategyNode
-                val toNodeList = mutableListOf<StrategyNode>()
-                val connectList: List<StrategyConnect> = strategyNodeWithConnect.connects
+                val connectList: List<StrategyNodesConnect> = strategyNodeWithConnect.connects
                 graph[fromNode] = connectList
             }
-            strategyComplete.setGraph(graph)
-            return  strategyComplete;
+            strategyInnerDetail.setGraph(graph)
+            return  strategyInnerDetail;
         }
 
+
+        /**
+         * 转为策略外部模型
+         */
+        fun convertStrategyWithNodeAndConnectPojo2StrategyOuterModel(strategyWithNodesAndConnectPojo: StrategyWithNodesAndConnectPojo): StrategyOuterModel {
+            val strategyOuterModel = StrategyOuterModel()
+            //base info
+            strategyOuterModel.setId(strategyWithNodesAndConnectPojo.id)
+            strategyOuterModel.setUuid(strategyWithNodesAndConnectPojo.uuid)
+            strategyOuterModel.setCode(strategyWithNodesAndConnectPojo.code)
+            strategyOuterModel.setDescription(strategyWithNodesAndConnectPojo.description)
+            //start node
+            val startNode = convertStrategyNodePojo2StrategyNode(strategyWithNodesAndConnectPojo.startNode)
+            strategyOuterModel.setStartNode(startNode)
+            //resultNodes & outerNodeMap
+            val resultNodes = mutableListOf<StrategyNode>()
+            val outerNodeMap = mutableMapOf<StrategyNode, MutableList<StrategyNodesConnect>>()
+            val strategyUUID = strategyWithNodesAndConnectPojo.uuid
+            val strategyNodeWithConnectPojoList = strategyWithNodesAndConnectPojo.nodes
+            for(strategyNodeWithConnectPojo:StrategyNodeWithConnectPojo in strategyNodeWithConnectPojoList){
+                val strategyNodeWithConnect:StrategyNodeWithConnect = convertStrategyNodeWithConnectPojo2StrategyNodeWithConnect(strategyNodeWithConnectPojo)
+                val fromNode = strategyNodeWithConnect.strategyNode
+                //结果节点
+                if(fromNode.type == StrategyNodeTypeEnum.result){
+                    resultNodes.add(fromNode);
+                }else{
+                    //一般节点，并且是连接到其他策略的，则加入outerNodeMap
+                    val connectList: List<StrategyNodesConnect> = strategyNodeWithConnect.connects
+                    for(connect: StrategyNodesConnect in connectList){
+                        val toNode = connect.toNode
+                        //是否连接到其他策略
+                        if(toNode.strategyUuid!=strategyUUID){
+                            if(outerNodeMap[fromNode]==null){
+                                outerNodeMap[fromNode] = mutableListOf<StrategyNodesConnect>();
+                            }
+                            val list: MutableList<StrategyNodesConnect>? = outerNodeMap[fromNode]
+                            list?.add(connect)
+                        }
+                    }
+                }
+            }
+            strategyOuterModel.setResultNodes(resultNodes)
+            strategyOuterModel.setOuterNodeMap(outerNodeMap)
+            return  strategyOuterModel;
+        }
 
         /**
          *  build strategyNode

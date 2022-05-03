@@ -3,7 +3,11 @@ package com.mtech.risk.dataio.model;
 import java.util.List;
 import java.util.Map;
 
-public class StrategyComplete {
+/**
+ * Strategy 内部逻辑模型
+ * 使用了图的模型定义
+ */
+public class StrategyInnerDetail {
     int id;
     String uuid;
     String code;
@@ -13,7 +17,7 @@ public class StrategyComplete {
     /**
      * 邻接矩阵
      */
-    Map<StrategyNode, List<StrategyConnect>> graph;
+    Map<StrategyNode, List<StrategyNodesConnect>> graph;
 
     public int getId() {
         return id;
@@ -55,11 +59,11 @@ public class StrategyComplete {
         this.startNode = startNode;
     }
 
-    public Map<StrategyNode, List<StrategyConnect>> getGraph() {
+    public Map<StrategyNode, List<StrategyNodesConnect>> getGraph() {
         return graph;
     }
 
-    public void setGraph(Map<StrategyNode, List<StrategyConnect>> graph) {
+    public void setGraph(Map<StrategyNode, List<StrategyNodesConnect>> graph) {
         this.graph = graph;
     }
 }

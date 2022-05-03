@@ -1,6 +1,6 @@
 package com.mtech.risk.dataio.model
 
-data class StrategyConnectWithNodeDetailsPojo(
+data class StrategyNodeConnectWithNodeDetailsPojo(
     val id: Int,
     val uuid: String,
     val fromNodeUuid: String,

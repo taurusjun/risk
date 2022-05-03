@@ -17,18 +17,18 @@ class StrategyController(@Autowired private val strategyService: StrategyService
             .body(strategyService.getStrategyNodesByStrategyUUID(strategyUUID))
 
     @GetMapping("/mockconnects")
-    fun getMockStrategyNodeListByStrategyUUID(): ResponseEntity<List<StrategyConnectPojo>> {
+    fun getMockStrategyNodeListByStrategyUUID(): ResponseEntity<List<StrategyNodeConnectPojo>> {
         val uuidSet = mutableSetOf<String>()
         uuidSet.add("f049ff84-a3af-11ec-b909-0242ac120002")
         uuidSet.add("82d63dad-d7d7-4c55-a7c6-211cfc4e67a6")
         return ResponseEntity.status(HttpStatus.OK)
-            .body(strategyService.getStrategyConnectsPojoByFromNodeUUID(uuidSet))
+            .body(strategyService.getStrategyNodeConnectsPojoByFromNodeUUID(uuidSet))
     }
 
     @PostMapping("/connects")
-    fun getStrategyNodeListByStrategyUUID(@RequestBody uuidSet: Set<String>): ResponseEntity<List<StrategyConnectPojo>> {
+    fun getStrategyNodeListByStrategyUUID(@RequestBody uuidSet: Set<String>): ResponseEntity<List<StrategyNodeConnectPojo>> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(strategyService.getStrategyConnectsPojoByFromNodeUUID(uuidSet))
+            .body(strategyService.getStrategyNodeConnectsPojoByFromNodeUUID(uuidSet))
     }
 
     @GetMapping("/nodesWithConnect/{strategyUUID}")
@@ -41,8 +41,23 @@ class StrategyController(@Autowired private val strategyService: StrategyService
         ResponseEntity.status(HttpStatus.OK)
             .body(strategyService.getSingleStrategyWithNodesAndConnectPojoByUUID(strategyUUID))
 
-    @GetMapping("/strategyComplete/{strategyUUID}")
-    fun getStrategyWithNodesByStrategyUUID(@PathVariable strategyUUID : String): ResponseEntity<StrategyComplete> =
+    @GetMapping("/strategyInnerDetail/{strategyUUID}")
+    fun getStrategyInnerDetailByStrategyUUID(@PathVariable strategyUUID : String): ResponseEntity<StrategyInnerDetail> =
         ResponseEntity.status(HttpStatus.OK)
-            .body(strategyService.getStrategyWithNodesByStrategyUUID(strategyUUID))
+            .body(strategyService.getStrategyInnerDetailByStrategyUUID(strategyUUID))
+
+    @GetMapping("/strategyOuterModel/{strategyUUID}")
+    fun getStrategyOuterModelByStrategyUUID(@PathVariable strategyUUID : String): ResponseEntity<StrategyOuterModel> =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(strategyService.getStrategyOuterModelByStrategyUUID(strategyUUID))
+
+    @GetMapping("/strategyConnects/{strategyUUID}")
+    fun getStrategyConnectsByUUID(@PathVariable strategyUUID : String): ResponseEntity<List<StrategyConnectPojo>> =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(strategyService.getStrategyConnectsByUUID(strategyUUID))
+
+    @GetMapping("/strategyWithConnects/{strategyUUID}")
+    fun getStrategyWithConnectsByUUID(@PathVariable strategyUUID : String): ResponseEntity<StrategyWithConnectsPojo> =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(strategyService.getStrategyWithConnectsByUUID(strategyUUID))
 }

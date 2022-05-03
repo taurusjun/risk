@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StrategyNodeWithConnect {
     StrategyNode strategyNode;
-    List<StrategyConnect> connects;
+    List<StrategyNodesConnect> connects;
 
     public StrategyNode getStrategyNode() {
         return strategyNode;
@@ -14,11 +14,11 @@ public class StrategyNodeWithConnect {
         this.strategyNode = strategyNode;
     }
 
-    public List<StrategyConnect> getConnects() {
+    public List<StrategyNodesConnect> getConnects() {
         return connects;
     }
 
-    public void setConnects(List<StrategyConnect> connects) {
+    public void setConnects(List<StrategyNodesConnect> connects) {
         this.connects = connects;
     }
 }
