@@ -41,6 +41,11 @@ class StrategyController(@Autowired private val strategyService: StrategyService
         ResponseEntity.status(HttpStatus.OK)
             .body(strategyService.getSingleStrategyWithNodesAndConnectPojoByUUID(strategyUUID))
 
+    @GetMapping("/strategyInnerDetailList")
+    fun getStrategyInnerDetailByStrategyUUID(): ResponseEntity<List<StrategyInnerDetail>> =
+        ResponseEntity.status(HttpStatus.OK)
+            .body(strategyService.getAllStrategyInnerDetailByStrategyUUID())
+
     @GetMapping("/strategyInnerDetail/{strategyUUID}")
     fun getStrategyInnerDetailByStrategyUUID(@PathVariable strategyUUID : String): ResponseEntity<StrategyInnerDetail> =
         ResponseEntity.status(HttpStatus.OK)

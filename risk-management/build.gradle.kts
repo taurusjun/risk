@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.6.10"
+    kotlin("plugin.lombok") version "1.6.21"
     java
     id("org.springframework.boot")
     application

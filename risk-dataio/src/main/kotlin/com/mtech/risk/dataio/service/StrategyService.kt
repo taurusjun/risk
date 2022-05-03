@@ -8,11 +8,30 @@ import org.springframework.stereotype.Service
 
 @Service
 class StrategyService(@Autowired private val strategyDAO: StrategyDAO) {
+    /**
+     * StrategyOuterModel
+     */
     fun getStrategyOuterModelByStrategyUUID(strategyUUID: String): StrategyOuterModel? {
         val strategyWithNodesAndConnectPojo = strategyDAO.getSingleStrategyWithNodesAndConnectByUUID(strategyUUID)?:return null
         return Convertor.convertStrategyWithNodeAndConnectPojo2StrategyOuterModel(strategyWithNodesAndConnectPojo)
     }
 
+    /**
+     * All StrategyInnerDetail
+     */
+    fun getAllStrategyInnerDetailByStrategyUUID(): List<StrategyInnerDetail>? {
+        val strategyWithNodesAndConnectPojoList = strategyDAO.getAllStrategyWithNodesAndConnectByUUID()?:return null
+        val strategyInnerDetailList= mutableListOf<StrategyInnerDetail>()
+        for(strategyWithNodesAndConnectPojo in strategyWithNodesAndConnectPojoList){
+            val strategyInnerDetail = Convertor.convertStrategyWithNodeAndConnectPojo2StrategyInnerDetail(strategyWithNodesAndConnectPojo)
+            strategyInnerDetailList.add(strategyInnerDetail)
+        }
+        return strategyInnerDetailList
+    }
+
+    /**
+     * StrategyInnerDetail
+     */
     fun getStrategyInnerDetailByStrategyUUID(strategyUUID: String): StrategyInnerDetail? {
         val strategyWithNodesAndConnectPojo = strategyDAO.getSingleStrategyWithNodesAndConnectByUUID(strategyUUID)?:return null
         return Convertor.convertStrategyWithNodeAndConnectPojo2StrategyInnerDetail(strategyWithNodesAndConnectPojo)

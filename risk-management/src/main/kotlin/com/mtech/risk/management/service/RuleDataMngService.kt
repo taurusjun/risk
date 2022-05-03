@@ -9,7 +9,7 @@ import com.mtech.risk.dataio.service.RuleService
 import com.mtech.risk.management.bff.model.RuleLogicVO
 import com.mtech.risk.management.bff.model.RuleVO
 import com.mtech.risk.management.bff.model.RuleWithActionsVO
-import com.mtech.risk.management.utils.Convertor
+import com.mtech.risk.management.utils.RuleConvertor
 import com.mtech.risk.plugin.model.RuleObject
 import com.mtech.risk.plugin.service.RiskRuleScriptExecutor
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +27,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      */
     fun ruleLogicVOQuery(uuid: String): RuleLogicVO?{
         val ruleLogic = ruleService.getRuleLogic(uuid) ?: return null
-        val ruleLogicVO = Convertor.convertRuleLogicToUIVO(ruleLogic)
+        val ruleLogicVO = RuleConvertor.convertRuleLogicToUIVO(ruleLogic)
         return ruleLogicVO
     }
 
@@ -36,7 +36,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      */
     fun ruleActionVOQuery(uuid: String): RuleWithActionsVO {
         val ruleActionList = ruleService.getRuleActionListByUUID(uuid)
-        val ruleWithActionsVO = Convertor.convertRuleActionToUIVO(uuid, ruleActionList)
+        val ruleWithActionsVO = RuleConvertor.convertRuleActionToUIVO(uuid, ruleActionList)
         return ruleWithActionsVO
     }
 
@@ -47,7 +47,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
         val ruleList = ruleService.getAllRules()?:return null
         val ruleVOList = mutableListOf<RuleVO>()
         for(rule: Rule in ruleList){
-            val ruleVO = Convertor.convertRuleToVO(rule)
+            val ruleVO = RuleConvertor.convertRuleToVO(rule)
             ruleVOList.add(ruleVO)
         }
         return ruleVOList
@@ -57,7 +57,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      * Cascade rule logic update
      */
     fun ruleLogicUpdate(ruleVO: RuleLogicVO) {
-        val rule = Convertor.convertVOToRuleLogic(ruleVO)
+        val rule = RuleConvertor.convertVOToRuleLogic(ruleVO)
         ///////
         transactionTemplate.execute {
             var currentVersion = ruleService.getRuleVersion(ruleVO.uuid)
@@ -75,7 +75,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      */
     fun ruleLogicInsert(ruleVO: RuleLogicVO) {
         ruleVO.uuid = UUID.randomUUID().toString()
-        val rule = Convertor.convertVOToRuleLogic(ruleVO)
+        val rule = RuleConvertor.convertVOToRuleLogic(ruleVO)
 
         ///////
         transactionTemplate.execute {
@@ -88,7 +88,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
      * Cascade rule action update
      */
     fun ruleActionUpdate(ruleWithActionsVO: RuleWithActionsVO) {
-        val ruleActionList = Convertor.convertVOToRuleActionList(ruleWithActionsVO)
+        val ruleActionList = RuleConvertor.convertVOToRuleActionList(ruleWithActionsVO)
         ///////
         transactionTemplate.execute {
             ruleService.updateRuleActionCascade(ruleWithActionsVO.uuid, ruleActionList)
@@ -104,7 +104,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     private fun reCompileAndSaveRule(uuid: String, insertOrUpdate: Boolean){
         val rule: RuleComplete? = ruleService.getCompleteRule(uuid)
         if(rule!=null){
-            val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
+            val ruleObj: RuleObject = RuleConvertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);
             val ruleCompiledScript = RuleCompiledScript(
                 0, ruleObj.uuid, "java", "MVEL",script,rule.version
@@ -136,7 +136,7 @@ open class RuleDataMngService(@Autowired private val ruleService: RuleService,
     fun compileScript(uuid:String):String?{
         val rule: RuleComplete? = ruleService.getCompleteRule(uuid)
         if(rule!=null){
-            val ruleObj: RuleObject = Convertor.convertRuleToRuleObject(rule)
+            val ruleObj: RuleObject = RuleConvertor.convertRuleToRuleObject(rule)
             val script = riskRuleScriptExecutor.compile(ruleObj);
     //            val ruleCompiledScript = RuleCompiledScript(
     //                0, ruleObj.uuid, "java", "MVEL",script,1

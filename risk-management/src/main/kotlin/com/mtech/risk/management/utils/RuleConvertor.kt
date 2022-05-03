@@ -4,7 +4,7 @@ import com.mtech.risk.dataio.model.*
 import com.mtech.risk.management.bff.model.*
 import com.mtech.risk.plugin.model.*
 
-class Convertor {
+class RuleConvertor {
     companion object{
         /**
          * rule logic domain model to rule logic UI VO

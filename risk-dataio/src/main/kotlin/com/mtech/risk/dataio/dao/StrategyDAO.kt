@@ -31,6 +31,17 @@ interface StrategyDAO {
     ])
     fun getStrategyConnectsByUUID(uuid: String): List<StrategyConnectPojo>?
 
+    @Select("select id, uuid, code, description from strategy")
+    @Results(value = [
+        Result(property = "startNode", column = "uuid",
+            one = One(select = "com.mtech.risk.dataio.dao.StrategyDAO.getSingleStartNodeByStrategyUuid")
+        ),
+        Result(property = "nodes", column = "uuid",
+            many = Many(select = "com.mtech.risk.dataio.dao.StrategyDAO.getStrategyNodesAndConnectByStrategyUUID")
+        )
+    ])
+    fun getAllStrategyWithNodesAndConnectByUUID(): List<StrategyWithNodesAndConnectPojo>?
+
     @Select("select id, uuid, code, description from strategy where uuid=#{uuid}")
     @Results(value = [
         Result(property = "startNode", column = "uuid",
