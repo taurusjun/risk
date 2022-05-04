@@ -1,6 +1,5 @@
 package com.mtech.risk.management.controller.spa
 
-import com.mtech.risk.management.bff.model.StrategyNodeGraphVO
 import com.mtech.risk.management.response.Result
 import com.mtech.risk.management.service.StrategyDataMngService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,8 +15,18 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/StrategyPage")
 class StrategyPageController(@Autowired private val strategyDataMngService: StrategyDataMngService) {
     @GetMapping("/graph/node")
-    fun getRuleList(): ResponseEntity<Result<StrategyNodeGraphVO>> {
+    fun getRuleList(): ResponseEntity<Result<Map<String, Any>>> {
         val strategyNodeGraphVO = strategyDataMngService.strategyNodeGraphView()
-        return ResponseEntity.status(HttpStatus.OK).body(Result.ok(strategyNodeGraphVO))
+        val strategyNodeMap = strategyDataMngService.getAllStrategyNodeVO()
+
+        val map: MutableMap<String, Any> = mutableMapOf()
+        if(strategyNodeGraphVO!=null){
+            map["StrategyNodeGraph"] = strategyNodeGraphVO
+        }
+        if(strategyNodeMap!=null){
+            map["strategyNodeMap"] = strategyNodeMap
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(Result.ok(map))
     }
 }

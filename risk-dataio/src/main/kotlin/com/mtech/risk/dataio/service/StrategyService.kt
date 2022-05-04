@@ -39,12 +39,12 @@ class StrategyService(@Autowired private val strategyDAO: StrategyDAO) {
 
     fun getStrategyNodesByStrategyUUID(strategyUUID: String): List<StrategyNode>? {
         val strategyNodePojoList = strategyDAO.getStrategyNodesByStrategyUUID(strategyUUID)?:return null
-        val strategyNodeList = mutableListOf<StrategyNode>()
-        for (strategyNodePojo:StrategyNodePojo in strategyNodePojoList){
-            val strategyNode = Convertor.convertStrategyNodePojo2StrategyNode(strategyNodePojo)
-            strategyNodeList.add(strategyNode)
-        }
-        return strategyNodeList;
+        return Convertor.convertStrategyNodePojoList2StrategyNodeList(strategyNodePojoList);
+    }
+
+    fun getAllStrategyNodes(): List<StrategyNode>? {
+        val strategyNodePojoList = strategyDAO.getAllStrategyNodes()?:return null
+        return Convertor.convertStrategyNodePojoList2StrategyNodeList(strategyNodePojoList);
     }
 
     fun getStrategyNodeConnectsPojoByFromNodeUUID(fromNodeUUIDSet:Set<String>):List<StrategyNodeConnectPojo> =

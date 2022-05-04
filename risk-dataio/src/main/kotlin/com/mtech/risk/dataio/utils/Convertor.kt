@@ -4,6 +4,7 @@ import com.mtech.risk.dataio.model.*
 
 class Convertor {
     companion object{
+
         /**
          * Pojo to model
          */
@@ -19,6 +20,18 @@ class Convertor {
                 strategyNodePojo.result,
                 strategyNodePojo.strategyUuid
             )
+        }
+
+        /**
+         * Pojo list to model list
+         */
+        fun convertStrategyNodePojoList2StrategyNodeList(strategyNodePojoList: List<StrategyNodePojo>):List<StrategyNode>?{
+            val strategyNodeList = mutableListOf<StrategyNode>()
+            for (strategyNodePojo:StrategyNodePojo in strategyNodePojoList){
+                val strategyNode = Convertor.convertStrategyNodePojo2StrategyNode(strategyNodePojo)
+                strategyNodeList.add(strategyNode)
+            }
+            return strategyNodeList;
         }
 
         /**

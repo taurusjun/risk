@@ -76,6 +76,9 @@ interface StrategyDAO {
     @Select("select id, uuid, code, description, type, weight, rule_uuid, result, strategy_uuid  from strategy_node where strategy_uuid=#{strategyUUID}")
     fun getStrategyNodesByStrategyUUID(strategyUUID: String): List<StrategyNodePojo>?
 
+    @Select("select id, uuid, code, description, type, weight, rule_uuid, result, strategy_uuid  from strategy_node")
+    fun getAllStrategyNodes(): List<StrategyNodePojo>?
+
     @Select("select id, uuid, from_node_uuid, from_node_code, to_node_uuid, to_node_code, logic from strategy_node_connect where from_node_uuid=#{fromNodeUUID}")
     @Results(value = [
         Result(property = "fromNode", column = "from_node_uuid",
