@@ -1,6 +1,7 @@
 package com.mtech.risk.management.service
 
 import com.mtech.risk.dataio.service.StrategyService
+import com.mtech.risk.management.bff.model.StrategyInnerDetailVO
 import com.mtech.risk.management.bff.model.StrategyNodeConnectVO
 import com.mtech.risk.management.bff.model.StrategyNodeGraphVO
 import com.mtech.risk.management.bff.model.StrategyNodeVO
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service
 open class StrategyDataMngService(@Autowired private val strategyService: StrategyService) {
 
     fun strategyNodeGraphView(): StrategyNodeGraphVO? {
-        val strategyInnerDetailList = strategyService.getAllStrategyInnerDetailByStrategyUUID() ?: return null
+        val strategyInnerDetailList = strategyService.getAllStrategyInnerDetail() ?: return null
         val strategyNodeGraphVO = StrategyNodeGraphVO()
         val connectVOMap = mutableMapOf<String, List<StrategyNodeConnectVO>>()
         for (strategyInnerDetail in strategyInnerDetailList) {
@@ -36,5 +37,24 @@ open class StrategyDataMngService(@Autowired private val strategyService: Strate
             map[strategyNodeVO.code] = strategyNodeVO
         }
         return map
+    }
+
+    fun getStrategyInnerDetailVOByUUID(uuid:String): StrategyInnerDetailVO {
+        val strategyInnerDetailVO = StrategyInnerDetailVO()
+        val strategyInnerDetail = strategyService.getStrategyInnerDetailByStrategyUUID(uuid)?:return strategyInnerDetailVO
+        //attributes
+        strategyInnerDetailVO.id = strategyInnerDetail.id
+        strategyInnerDetailVO.uuid = strategyInnerDetail.uuid
+        strategyInnerDetailVO.code = strategyInnerDetail.code
+        strategyInnerDetailVO.description = strategyInnerDetail.description
+        //strategyNodeGraphVO
+        val strategyNodeGraphVO = StrategyNodeGraphVO()
+        if(strategyInnerDetail!=null){
+            strategyNodeGraphVO.startNode = StrategyConvertor.convertStrategyNodeToVO(strategyInnerDetail.startNode)
+            strategyNodeGraphVO.connectVOMap = StrategyConvertor.convertStrategyNodeGraphToVO(strategyInnerDetail.graph)
+        }
+        strategyInnerDetailVO.strategyNodeGraphVO = strategyNodeGraphVO
+
+        return strategyInnerDetailVO
     }
 }

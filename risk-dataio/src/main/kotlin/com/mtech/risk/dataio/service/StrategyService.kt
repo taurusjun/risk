@@ -19,7 +19,7 @@ class StrategyService(@Autowired private val strategyDAO: StrategyDAO) {
     /**
      * All StrategyInnerDetail
      */
-    fun getAllStrategyInnerDetailByStrategyUUID(): List<StrategyInnerDetail>? {
+    fun getAllStrategyInnerDetail(): List<StrategyInnerDetail>? {
         val strategyWithNodesAndConnectPojoList = strategyDAO.getAllStrategyWithNodesAndConnectByUUID()?:return null
         val strategyInnerDetailList= mutableListOf<StrategyInnerDetail>()
         for(strategyWithNodesAndConnectPojo in strategyWithNodesAndConnectPojoList){
